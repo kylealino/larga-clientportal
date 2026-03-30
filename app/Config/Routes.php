@@ -37,3 +37,7 @@ $routes->post('mycoa', 'COAController::index',['filter' => 'myauthuser']);
 $routes->get('myjournalentry', 'JournalEntryController::index',['filter' => 'myauthuser']);
 $routes->post('myjournalentry', 'JournalEntryController::index',['filter' => 'myauthuser']);
 
+//ACCOUNTING REPORT - Accounting report module
+$routes->get('myaccountingreport', 'AccountingReportController::index',['filter' => 'myauthuser']);
+$routes->post('myaccountingreport', 'AccountingReportController::index',['filter' => 'myauthuser']);
+

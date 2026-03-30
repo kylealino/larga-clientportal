@@ -459,7 +459,7 @@ $this->cuser = $this->session->get('__xsys_myuserzicas__');
               <span class="hide-menu fs-2">REPORTS</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="<?=site_url();?>mysaobrpt?meaction=MAIN" aria-expanded="false">
+              <a class="sidebar-link" href="<?=site_url();?>myaccountingreport?meaction=MAIN" aria-expanded="false">
                 <span class="rounded-3">
                   <i class="ti ti-file"></i>
                 </span>

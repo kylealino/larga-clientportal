@@ -27,125 +27,136 @@ echo view('templates/myheader.php');
 ?>
 
 <style>
+    /* Professional Chart of Accounts - Clean & Elegant */
+    
+    /* Status Pills - Professional */
     .status-pill {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 10px;
-        font-size: 12px;
-        font-weight: 600;
-        border-radius: 50px;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 30px;
         letter-spacing: 0.3px;
-    }
-
-    /* Dot indicator */
-    .status-pill::before {
-        content: '';
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-    }
-
-    /* ACTIVE (Green - subtle) */
-    .status-active {
-        background: rgba(25, 135, 84, 0.1);
-        color: #198754;
-    }
-    .status-active::before {
-        background: #198754;
-    }
-
-    /* INACTIVE (Red - subtle) */
-    .status-inactive {
-        background: rgba(220, 53, 69, 0.1);
-        color: #dc3545;
-    }
-    .status-inactive::before {
-        background: #dc3545;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Account Type Badges */
+    .status-pill::before {
+        content: '';
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+    }
+    
+    .status-active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .status-active::before {
+        background: #2e7d32;
+    }
+    
+    .status-inactive {
+        background: #ffebee;
+        color: #c62828;
+    }
+    .status-inactive::before {
+        background: #c62828;
+    }
+    
+    /* Account Type Badges - Subtle */
     .type-badge {
         display: inline-flex;
         align-items: center;
-        padding: 2px 8px;
+        padding: 2px 10px;
         font-size: 10px;
-        font-weight: 600;
-        border-radius: 20px;
+        font-weight: 500;
+        border-radius: 30px;
         letter-spacing: 0.3px;
+        font-family: 'Inter', monospace;
     }
-    .type-asset { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
-    .type-liability { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
-    .type-equity { background: rgba(25, 135, 84, 0.1); color: #198754; }
-    .type-revenue { background: rgba(32, 201, 151, 0.1); color: #20c997; }
-    .type-expense { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+    .type-asset { background: #e3f2fd; color: #1565c0; }
+    .type-liability { background: #fff3e0; color: #ef6c00; }
+    .type-equity { background: #e8f5e9; color: #2e7d32; }
+    .type-revenue { background: #e0f2f1; color: #00897b; }
+    .type-expense { background: #fbe9e7; color: #d84315; }
     
-    /* Edit mode badge */
+    /* Edit Mode Badge */
     .edit-mode-badge {
-        background: #e9ecef;
-        color: #0d6efd;
+        background: #f5f5f5;
+        color: #1976d2;
         font-size: 0.7rem;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
+        padding: 0.3rem 1rem;
+        border-radius: 30px;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
+        font-weight: 500;
     }
     
-    /* Account Tree Styles */
+    /* Account Tree - Clean Professional */
     .account-tree {
         font-size: 0.875rem;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
     .account-item {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .account-item:last-child {
+        border-bottom: none;
     }
     
     .account-card {
         background: #fff;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
+        padding: 0.7rem 1rem;
         transition: all 0.2s ease;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 0.75rem;
+        border-left: 2px solid transparent;
     }
     
     .account-card:hover {
-        border-color: #dee2e6;
-        background: #f8f9fa;
+        background: #fafafa;
+        border-left-color: #1976d2;
+        padding-left: 1rem;
     }
     
     .account-info {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.25rem;
         flex-wrap: wrap;
     }
     
     .account-code {
-        font-family: monospace;
-        font-weight: 600;
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-weight: 500;
         font-size: 0.75rem;
-        background: #f8f9fa;
-        padding: 0.25rem 0.6rem;
+        background: #f5f5f5;
+        padding: 0.2rem 0.6rem;
         border-radius: 4px;
-        color: #0d6efd;
+        color: #1976d2;
+        letter-spacing: 0.3px;
     }
     
     .account-name {
         font-weight: 500;
-        color: #212529;
+        color: #2c3e50;
+        font-size: 0.85rem;
     }
     
     .account-actions {
         display: flex;
         gap: 0.5rem;
-        opacity: 0.6;
+        opacity: 0.5;
         transition: opacity 0.2s ease;
     }
     
@@ -156,9 +167,9 @@ echo view('templates/myheader.php');
     .action-icon {
         background: none;
         border: none;
-        padding: 0.25rem;
+        padding: 0.3rem;
         cursor: pointer;
-        color: #6c757d;
+        color: #7f8c8d;
         transition: all 0.2s ease;
         border-radius: 4px;
         text-decoration: none;
@@ -168,11 +179,11 @@ echo view('templates/myheader.php');
     }
     
     .action-icon:hover {
-        color: #0d6efd;
-        background: #e9ecef;
+        color: #1976d2;
+        background: #e3f2fd;
     }
     
-    /* Filter Buttons */
+    /* Filter Buttons - Clean */
     .filter-group {
         display: flex;
         gap: 0.5rem;
@@ -180,55 +191,104 @@ echo view('templates/myheader.php');
     }
     
     .filter-btn {
-        padding: 0.25rem 0.75rem;
+        padding: 0.25rem 1rem;
         font-size: 0.7rem;
-        border-radius: 20px;
-        border: 1px solid #dee2e6;
+        border-radius: 30px;
+        border: 1px solid #e0e0e0;
         background: #fff;
-        color: #6c757d;
+        color: #5f6368;
         cursor: pointer;
         transition: all 0.2s ease;
+        font-weight: 500;
     }
     
     .filter-btn.active {
-        background: #0d6efd;
-        border-color: #0d6efd;
+        background: #1976d2;
+        border-color: #1976d2;
         color: #fff;
     }
     
     .filter-btn:hover:not(.active) {
-        background: #f8f9fa;
-        border-color: #adb5bd;
+        background: #f5f5f5;
+        border-color: #bdbdbd;
     }
     
-    /* Stats Cards */
+    /* Stats Cards - Minimal Professional */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 1rem;
         margin-bottom: 1.5rem;
     }
     
     .stat-card {
         background: #fff;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 0.75rem;
+        border: 1px solid #e8e8e8;
+        border-radius: 12px;
+        padding: 1rem 0.75rem;
         text-align: center;
+        transition: all 0.2s ease;
+    }
+    
+    .stat-card:hover {
+        border-color: #d0d0d0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     
     .stat-number {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #212529;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a2c3e;
         margin-bottom: 0.25rem;
+        font-family: 'Inter', monospace;
     }
     
     .stat-label {
         font-size: 0.65rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        color: #6c757d;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    /* Card Header - Consistent */
+    .card-header {
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+    }
+    
+    /* Form Elements */
+    .form-control-sm, .form-select-sm {
+        border-color: #e0e0e0;
+        font-size: 0.8rem;
+    }
+    
+    .form-control-sm:focus, .form-select-sm:focus {
+        border-color: #1976d2;
+        box-shadow: 0 0 0 2px rgba(25,118,210,0.1);
+    }
+    
+    /* Breadcrumb */
+    .breadcrumb {
+        font-size: 0.75rem;
+    }
+    
+    /* Indentation Helper */
+    .account-item {
+        position: relative;
+    }
+    
+    /* Connector lines for better hierarchy (optional) */
+    .account-item:not([style*="padding-left: 0px"]) .account-card::before {
+        content: '';
+        position: absolute;
+        left: 12px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #e8e8e8;
+        transform: translateX(-50%);
+        pointer-events: none;
     }
 </style>
 
@@ -238,17 +298,19 @@ echo view('templates/myheader.php');
     <input type="hidden" id="__siteurl" data-mesiteurl="<?=site_url();?>" />
     
     <!-- Page Header -->
-    <div class="row mb-2 mt-0">
-        <h4 class="fw-semibold mb-8">Chart of Accounts</h4>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a class="text-muted text-decoration-none" href="<?=site_url();?>"><i class="ti ti-home fs-5"></i></a>
-                </li>
-                <li class="breadcrumb-item" aria-current="page">Accounting</li>
-                <li class="breadcrumb-item" aria-current="page"><span class="form-label fw-bold">Chart of Accounts</span></li>
-            </ol>
-        </nav>
+    <div class="row mb-3 mt-0">
+        <div class="col-12">
+            <h4 class="fw-semibold mb-1" style="color: #1a2c3e;">Chart of Accounts</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a class="text-muted text-decoration-none" href="<?=site_url();?>"><i class="ti ti-home fs-5"></i></a>
+                    </li>
+                    <li class="breadcrumb-item" aria-current="page">Accounting</li>
+                    <li class="breadcrumb-item active fw-semibold" aria-current="page">Chart of Accounts</li>
+                </ol>
+            </nav>
+        </div>
     </div>
     
     <!-- Stats Overview -->
@@ -278,13 +340,13 @@ echo view('templates/myheader.php');
         </div>
     </div>
     
-    <!-- Add/Edit Account Card (Matching Journal Entry Style) -->
+    <!-- Add/Edit Account Card -->
     <div class="card">
-        <div class="card-header p-1">
-            <div class="row">
+        <div class="card-header p-2">
+            <div class="row align-items-center">
                 <div class="col-sm-6 d-flex align-items-center text-start">
-                    <h6 class="mb-0 lh-base px-3 fw-semibold d-flex align-items-center">
-                        <i class="ti ti-pencil fs-5 me-1"></i>
+                    <h6 class="mb-0 lh-base px-3 fw-semibold d-flex align-items-center" style="color: #1a2c3e;">
+                        <i class="ti ti-pencil fs-5 me-2" style="color: #1976d2;"></i>
                         <span class="pt-1"><?= !empty($account_id) ? 'Edit Account' : 'Add New Account'; ?></span>
                     </h6>
                 </div>
@@ -298,10 +360,10 @@ echo view('templates/myheader.php');
             </div>
         </div>
         
-        <div class="card-body p-0 px-4 py-2 my-2">
+        <div class="card-body p-0 px-4 py-3 my-1">
             <?php if(!empty($account_id)): ?>
                 <div class="edit-mode-badge">
-                    <i class="ti ti-edit"></i>
+                    <i class="ti ti-edit fs-6"></i>
                     Editing: <?= $account_code; ?> - <?= $account_name; ?>
                 </div>
             <?php endif; ?>
@@ -311,22 +373,22 @@ echo view('templates/myheader.php');
                 <div class="row">
                     <!-- LEFT COLUMN -->
                     <div class="col-sm-6">
-                        <div class="row mb-2 mt-2">
-                            <div class="col-sm-4"><span>Account Code:</span></div>
+                        <div class="row mb-3 mt-1">
+                            <div class="col-sm-4"><span class="text-secondary" style="font-size: 0.75rem;">Account Code:</span></div>
                             <div class="col-sm-8">
                                 <input type="text" name="account_code" id="account_code" class="form-control form-control-sm" value="<?= $account_code; ?>" placeholder="e.g., 1010" required>
                             </div>
                         </div>
 
-                        <div class="row mb-2">
-                            <div class="col-sm-4"><span>Account Name:</span></div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><span class="text-secondary" style="font-size: 0.75rem;">Account Name:</span></div>
                             <div class="col-sm-8">
                                 <input type="text" name="account_name" id="account_name" class="form-control form-control-sm" value="<?= $account_name; ?>" placeholder="e.g., Cash on Hand" required>
                             </div>
                         </div>
 
-                        <div class="row mb-2">
-                            <div class="col-sm-4"><span>Account Type:</span></div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><span class="text-secondary" style="font-size: 0.75rem;">Account Type:</span></div>
                             <div class="col-sm-8">
                                 <select name="account_type" id="account_type" class="form-select form-select-sm" required>
                                     <option value="">Select Type</option>
@@ -341,9 +403,9 @@ echo view('templates/myheader.php');
                     </div>
 
                     <!-- RIGHT COLUMN -->
-                    <div class="col-sm-6 my-2">
-                        <div class="row mb-2">
-                            <div class="col-sm-4"><span>Parent Account:</span></div>
+                    <div class="col-sm-6">
+                        <div class="row mb-3 mt-1">
+                            <div class="col-sm-4"><span class="text-secondary" style="font-size: 0.75rem;">Parent Account:</span></div>
                             <div class="col-sm-8">
                                 <select name="parent_code" id="parent_code" class="form-select form-select-sm">
                                     <option value="">— None (Main Account) —</option>
@@ -358,8 +420,8 @@ echo view('templates/myheader.php');
                             </div>
                         </div>
 
-                        <div class="row mb-2">
-                            <div class="col-sm-4"><span>Status:</span></div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><span class="text-secondary" style="font-size: 0.75rem;">Status:</span></div>
                             <div class="col-sm-8">
                                 <select name="is_active" id="is_active" class="form-select form-select-sm">
                                     <option value="1" <?= $is_active == '1' ? 'selected' : ''; ?>>Active</option>
@@ -371,7 +433,7 @@ echo view('templates/myheader.php');
                 </div>
 
                 <!-- BUTTONS -->
-                <div class="row mt-3">
+                <div class="row mt-3 mb-2">
                     <div class="col-sm-12 text-end">
                         <?php if(!empty($account_id)): ?>
                             <a href="<?= site_url('mycoa?meaction=MAIN'); ?>" class="btn btn-outline-secondary btn-sm">
@@ -390,11 +452,11 @@ echo view('templates/myheader.php');
 
     <!-- Chart of Accounts Structure Card -->
     <div class="card mt-3">
-        <div class="card-header p-1">
-            <div class="row">
+        <div class="card-header p-2">
+            <div class="row align-items-center">
                 <div class="col-sm-6 d-flex align-items-center text-start">
-                    <h6 class="mb-0 lh-base px-3 fw-semibold d-flex align-items-center">
-                        <i class="ti ti-list-tree fs-5 me-1"></i>
+                    <h6 class="mb-0 lh-base px-3 fw-semibold d-flex align-items-center" style="color: #1a2c3e;">
+                        <i class="ti ti-list-tree fs-5 me-2" style="color: #1976d2;"></i>
                         <span class="pt-1">Chart of Accounts Structure</span>
                     </h6>
                 </div>
@@ -411,7 +473,7 @@ echo view('templates/myheader.php');
             </div>
         </div>
         
-        <div class="card-body p-2 px-4 py-3">
+        <div class="card-body p-0 px-3 py-2">
             <div class="account-tree" id="accountTree">
                 <?php
                 // Get all accounts with proper null checks
@@ -438,7 +500,7 @@ echo view('templates/myheader.php');
                         $is_active = $row['is_active'] ?? 1;
                         $account_id = $row['account_id'] ?? '';
                         ?>
-                        <div class="account-item" data-type="<?= $account_type; ?>" data-active="<?= $is_active; ?>" style="padding-left: <?= $level * 25 ?>px;">
+                        <div class="account-item" data-type="<?= $account_type; ?>" data-active="<?= $is_active; ?>" style="padding-left: <?= $level * 28 ?>px;">
                             <div class="account-card">
                                 <div class="account-info">
                                     <span class="account-code"><?= $account_code; ?></span>
@@ -468,7 +530,7 @@ echo view('templates/myheader.php');
                 <?php if(empty($accounts)): ?>
                     <div class="text-center py-5 text-muted">
                         <i class="ti ti-folder-off fs-1 d-block mb-2"></i>
-                        <p>No accounts found. Create your first account above.</p>
+                        <p class="mb-0">No accounts found. Create your first account above.</p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -501,8 +563,8 @@ $(document).ready(function() {
         // Scroll to form on page load when editing
         setTimeout(function() {
             $('html, body').animate({
-                scrollTop: $('.card').offset().top - 100
-            }, 700);
+                scrollTop: $('.card').offset().top - 20
+            }, 500);
         }, 300);
     <?php endif; ?>
 });
