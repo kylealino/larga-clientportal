@@ -1,254 +1,366 @@
 <?php
+// Balance Sheet PDF Generator
+// Based on the reference format for Cash Receipts Journal
+
 $this->request = \Config\Services::request();
 $this->db = \Config\Database::connect();
 
-$date_from = $this->request->getGet('date_from');
-$date_to = $this->request->getGet('date_to');
-$month = $this->request->getGet('month');
-$year = $this->request->getGet('year');
+// Get date parameters if provided (for demo, we'll use current date or passed dates)
+$as_of_date = $this->request->getGet('as_of_date');
+if (empty($as_of_date)) {
+    $as_of_date = date('Y-m-d');
+}
+$display_date = date('F d, Y', strtotime($as_of_date));
 
 $this->session = session();
 $this->cuser = $this->session->get('__xsys_myuserzicas__');
+if (empty($this->cuser)) {
+    $this->cuser = 'Demo User';
+}
+
 require APPPATH . 'ThirdParty/fpdf/fpdf.php';
 
 $currentDate = date("Y-m-d");
 $formattedDate = date("F j, Y", strtotime($currentDate));
 
-// Calculate date range if month/year is provided
-if (!empty($month) && !empty($year)) {
-    $monthNum = date('m', strtotime($month));
-    $date_from = $year . '-' . $monthNum . '-01';
-    $date_to = date('Y-m-d', strtotime($date_from . ' +1 month'));
-}
-
-// Get cash receipts data
-$query = $this->db->query("
-    SELECT 
-        j.journal_no,
-        j.posting_date,
-        j.reference_no,
-        j.remarks,
-        jd.account_code,
-        jd.account_name,
-        jd.debit_amount,
-        jd.credit_amount,
-        jd.description,
-        jd.cost_center
-    FROM tbl_journal j
-    INNER JOIN tbl_journal_details jd ON j.journal_id = jd.journal_id
-    WHERE j.journal_type = 'Cash Receipt'
-    AND j.status = 'Posted'
-");
-
-// Add date filters if provided
-if (!empty($date_from) && !empty($date_to)) {
-    $query = $this->db->query("
-        SELECT 
-            j.journal_no,
-            j.posting_date,
-            j.reference_no,
-            j.remarks,
-            jd.account_code,
-            jd.account_name,
-            jd.debit_amount,
-            jd.credit_amount,
-            jd.description,
-            jd.cost_center
-        FROM tbl_journal j
-        INNER JOIN tbl_journal_details jd ON j.journal_id = jd.journal_id
-        WHERE j.journal_type = 'Cash Receipt'
-        AND j.status = 'Posted'
-        AND j.posting_date BETWEEN ? AND ?
-        ORDER BY j.posting_date ASC
-    ", [$date_from, $date_to]);
-}
-
-$results = $query->getResultArray();
-
-// Calculate totals
-$totalDebit = 0;
-$totalCredit = 0;
-foreach ($results as $row) {
-    $totalDebit += floatval($row['debit_amount']);
-    $totalCredit += floatval($row['credit_amount']);
-}
-
 class PDF extends \FPDF {
     function Footer() {
-        // Position from bottom
         $this->SetY(-15);
-        
-        // Centered disclaimer
         $this->SetFont('Arial', '', 6);
-        $this->Cell(0, 5, 
-            'This is a computer-generated document. No signature is required.', 
-            0, 0, 'C'
-        );
-        
-        // Page number
-        $this->SetXY(-40, -15);
-        $this->SetFont('Arial', 'I', 8);
-        $this->Cell(30, 5, 'Page ' . $this->PageNo() . ' of {nb}', 0, 0, 'R');
+        $this->Cell(0, 4, 'This is a computer-generated document. No signature is required.', 0, 0, 'C');
+        $this->SetXY(-35, -15);
+        $this->SetFont('Arial', 'I', 7);
+        $this->Cell(25, 4, 'Page ' . $this->PageNo() . ' of {nb}', 0, 0, 'R');
     }
 }
 
-$pdf = new PDF('L', 'mm', 'LEGAL');
+$pdf = new PDF('P', 'mm', 'A4');
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetTitle('Cash Receipts Journal');
-$pdf->SetXY(0, 8);
+$pdf->SetTitle('Balance Sheet');
 
-$Y = 4;
+// Set margins
+$leftMargin = 10;
+$rightMargin = 10;
+$pdf->SetLeftMargin($leftMargin);
+$pdf->SetRightMargin($rightMargin);
+
+// Column widths for balance sheet (two columns: ASSETS on left, LIABILITIES & EQUITY on right)
+$col_left_label = 60;   // Left column label width
+$col_left_amount = 35;  // Left column amount width
+$col_right_label = 60;  // Right column label width
+$col_right_amount = 35; // Right column amount width
+$total_width = $col_left_label + $col_left_amount + $col_right_label + $col_right_amount; // 190mm
+
+$Y = 15;
 
 // Company Header
-$Y = $pdf->GetY() + 4;
-
+$pdf->SetY($Y);
 $pdf->SetFont('Arial', 'B', 12);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 4, 'DEPARTMENT OF SCIENCE AND TECHNOLOGY', 0, 1, 'C');
+$pdf->Cell(0, 5, 'SCIENCE SAVINGS AND LOAN ASSOCIATION INC.', 0, 1, 'C');
 
 $Y = $pdf->GetY();
-$pdf->SetFont('Arial', 'B', 10);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 4, 'FOOD AND NUTRITION RESEARCH INSTITUTE', 0, 1, 'C');
+$pdf->SetFont('Arial', 'B', 11);
+$pdf->Cell(0, 5, 'BALANCE SHEET', 0, 1, 'C');
 
 $Y = $pdf->GetY();
-$pdf->SetFont('Arial', 'B', 14);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 6, 'CASH RECEIPTS JOURNAL', 0, 1, 'C');
+$pdf->SetFont('Arial', '', 8);
+$pdf->Cell(0, 4, 'As of ' . $display_date, 0, 1, 'C');
 
-$Y = $pdf->GetY();
-$pdf->SetFont('Arial', '', 10);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 5, 'For the period ' . date('F d, Y', strtotime($date_from)) . ' to ' . date('F d, Y', strtotime($date_to)), 0, 1, 'C');
+$Y = $pdf->GetY() + 6;
 
-$Y = $pdf->GetY() + 8;
+// Set starting X positions
+$startX = $leftMargin;
+$leftX = $startX;
+$rightX = $startX + $col_left_label + $col_left_amount;
 
-// Table Header
-$pdf->SetFont('Arial', 'B', 7);
-$pdf->SetFillColor(220, 220, 220);
-
-$pdf->SetXY(15, $Y);
-$pdf->Cell(25, 8, 'Journal No', 1, 0, 'C', true);
-$pdf->Cell(22, 8, 'Date', 1, 0, 'C', true);
-$pdf->Cell(25, 8, 'Reference', 1, 0, 'C', true);
-$pdf->Cell(25, 8, 'Account Code', 1, 0, 'C', true);
-$pdf->Cell(45, 8, 'Account Name', 1, 0, 'C', true);
-$pdf->Cell(30, 8, 'Debit', 1, 0, 'C', true);
-$pdf->Cell(30, 8, 'Credit', 1, 0, 'C', true);
-$pdf->Cell(60, 8, 'Description', 1, 1, 'C', true);
-
-$Y = $pdf->GetY();
-$pdf->SetFont('Arial', '', 7);
-
-// Table Content
-if (count($results) > 0) {
-    foreach ($results as $row) {
-        $startY = $pdf->GetY();
-        
-        // MultiCell for description (might wrap)
-        $pdf->SetXY(272, $startY);
-        $pdf->MultiCell(60, 5, $row['description'], 0, 'L');
-        $endY = $pdf->GetY();
-        $rowHeight = $endY - $startY;
-        if ($rowHeight < 5) $rowHeight = 5;
-        
-        // Draw borders for all cells
-        $pdf->SetXY(15, $startY); $pdf->Cell(25, $rowHeight, '', 1);
-        $pdf->SetXY(40, $startY); $pdf->Cell(22, $rowHeight, '', 1);
-        $pdf->SetXY(62, $startY); $pdf->Cell(25, $rowHeight, '', 1);
-        $pdf->SetXY(87, $startY); $pdf->Cell(25, $rowHeight, '', 1);
-        $pdf->SetXY(112, $startY); $pdf->Cell(45, $rowHeight, '', 1);
-        $pdf->SetXY(157, $startY); $pdf->Cell(30, $rowHeight, '', 1);
-        $pdf->SetXY(187, $startY); $pdf->Cell(30, $rowHeight, '', 1);
-        $pdf->SetXY(217, $startY); $pdf->Cell(55, $rowHeight, '', 1);
-        
-        // Center content vertically
-        $middleY = $startY + ($rowHeight / 2) - 2.5;
-        
-        $pdf->SetXY(15, $middleY); $pdf->Cell(25, 5, $row['journal_no'], 0, 0, 'C');
-        $pdf->SetXY(40, $middleY); $pdf->Cell(22, 5, date('m/d/Y', strtotime($row['posting_date'])), 0, 0, 'C');
-        $pdf->SetXY(62, $middleY); $pdf->Cell(25, 5, $row['reference_no'], 0, 0, 'C');
-        $pdf->SetXY(87, $middleY); $pdf->Cell(25, 5, $row['account_code'], 0, 0, 'C');
-        $pdf->SetXY(112, $middleY); $pdf->Cell(45, 5, substr($row['account_name'], 0, 30), 0, 0, 'L');
-        $pdf->SetXY(157, $middleY); $pdf->Cell(30, 5, number_format($row['debit_amount'], 2), 0, 0, 'R');
-        $pdf->SetXY(187, $middleY); $pdf->Cell(30, 5, number_format($row['credit_amount'], 2), 0, 0, 'R');
-        
-        $pdf->SetY($endY);
-    }
-} else {
-    // No data found
-    $pdf->SetXY(15, $Y);
-    $pdf->Cell(262, 10, 'No transactions found for the selected period.', 1, 1, 'C');
-    $Y = $pdf->GetY();
+// Helper function to format currency
+function formatCurrency($amount) {
+    return number_format($amount, 2);
 }
 
+// ==================== MOCKUP DATA ====================
+// For demo purposes, we'll create realistic balance sheet data
+// In a real application, this would come from database queries
+
+// ASSETS SECTION
+$assets = [
+    'CURRENT ASSETS' => [
+        'Cash and Cash Equivalents' => 1250000.00,
+        'Accounts Receivable' => 450000.00,
+        'Allowance for Bad Debts' => -15000.00,
+        'Loans Receivable' => 2750000.00,
+        'Interest Receivable' => 42500.00,
+        'Prepaid Expenses' => 75000.00,
+        'Other Current Assets' => 25000.00,
+        'Total Current Assets' => 0 // Placeholder, will calculate
+    ],
+    'NON-CURRENT ASSETS' => [
+        'Property and Equipment' => 1850000.00,
+        'Accumulated Depreciation' => -325000.00,
+        'Intangible Assets' => 150000.00,
+        'Other Non-Current Assets' => 50000.00,
+        'Total Non-Current Assets' => 0 // Placeholder
+    ],
+    'TOTAL ASSETS' => 0 // Placeholder
+];
+
+// LIABILITIES SECTION
+$liabilities = [
+    'CURRENT LIABILITIES' => [
+        'Accounts Payable' => 185000.00,
+        'Accrued Expenses' => 42500.00,
+        'Due to Borrowers' => 3250000.00,
+        'Unearned Interest' => 32500.00,
+        'Other Current Liabilities' => 15000.00,
+        'Total Current Liabilities' => 0 // Placeholder
+    ],
+    'NON-CURRENT LIABILITIES' => [
+        'Notes Payable' => 500000.00,
+        'Other Non-Current Liabilities' => 25000.00,
+        'Total Non-Current Liabilities' => 0 // Placeholder
+    ],
+    'TOTAL LIABILITIES' => 0 // Placeholder
+];
+
+// EQUITY SECTION
+$equity = [
+    'EQUITY' => [
+        'Share Capital' => 1000000.00,
+        'Retained Earnings' => 525000.00,
+        'Reserves' => 75000.00,
+        'Total Equity' => 0 // Placeholder
+    ]
+];
+
+// Calculate totals
+// Current Assets total
+$assets['CURRENT ASSETS']['Total Current Assets'] = 
+    $assets['CURRENT ASSETS']['Cash and Cash Equivalents'] +
+    $assets['CURRENT ASSETS']['Accounts Receivable'] +
+    $assets['CURRENT ASSETS']['Allowance for Bad Debts'] +
+    $assets['CURRENT ASSETS']['Loans Receivable'] +
+    $assets['CURRENT ASSETS']['Interest Receivable'] +
+    $assets['CURRENT ASSETS']['Prepaid Expenses'] +
+    $assets['CURRENT ASSETS']['Other Current Assets'];
+
+// Non-Current Assets total
+$assets['NON-CURRENT ASSETS']['Total Non-Current Assets'] = 
+    $assets['NON-CURRENT ASSETS']['Property and Equipment'] +
+    $assets['NON-CURRENT ASSETS']['Accumulated Depreciation'] +
+    $assets['NON-CURRENT ASSETS']['Intangible Assets'] +
+    $assets['NON-CURRENT ASSETS']['Other Non-Current Assets'];
+
+// Total Assets
+$assets['TOTAL ASSETS'] = 
+    $assets['CURRENT ASSETS']['Total Current Assets'] +
+    $assets['NON-CURRENT ASSETS']['Total Non-Current Assets'];
+
+// Current Liabilities total
+$liabilities['CURRENT LIABILITIES']['Total Current Liabilities'] = 
+    $liabilities['CURRENT LIABILITIES']['Accounts Payable'] +
+    $liabilities['CURRENT LIABILITIES']['Accrued Expenses'] +
+    $liabilities['CURRENT LIABILITIES']['Due to Borrowers'] +
+    $liabilities['CURRENT LIABILITIES']['Unearned Interest'] +
+    $liabilities['CURRENT LIABILITIES']['Other Current Liabilities'];
+
+// Non-Current Liabilities total
+$liabilities['NON-CURRENT LIABILITIES']['Total Non-Current Liabilities'] = 
+    $liabilities['NON-CURRENT LIABILITIES']['Notes Payable'] +
+    $liabilities['NON-CURRENT LIABILITIES']['Other Non-Current Liabilities'];
+
+// Total Liabilities
+$liabilities['TOTAL LIABILITIES'] = 
+    $liabilities['CURRENT LIABILITIES']['Total Current Liabilities'] +
+    $liabilities['NON-CURRENT LIABILITIES']['Total Non-Current Liabilities'];
+
+// Total Equity
+$equity['EQUITY']['Total Equity'] = 
+    $equity['EQUITY']['Share Capital'] +
+    $equity['EQUITY']['Retained Earnings'] +
+    $equity['EQUITY']['Reserves'];
+
+// Check accounting equation: Assets = Liabilities + Equity
+$total_liabilities_equity = $liabilities['TOTAL LIABILITIES'] + $equity['EQUITY']['Total Equity'];
+
+// ==================== RENDER BALANCE SHEET ====================
+
+// Set font for section headers
+$pdf->SetFont('Arial', 'B', 9);
+
+// Render ASSETS section (left column)
+$pdf->SetXY($leftX, $Y);
+$pdf->Cell($col_left_label, 8, 'ASSETS', 0, 0, 'L');
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell($col_left_amount, 8, 'Amount', 0, 1, 'R');
+
+$pdf->SetFont('Arial', '', 8);
 $currentY = $pdf->GetY();
 
-// Fill empty rows on first page
-if ($pdf->PageNo() == 1 && count($results) > 0) {
-    while ($currentY < 180) {
-        $pdf->SetXY(15, $currentY); $pdf->Cell(25, 5, '', 1, 0, 'C');
-        $pdf->SetXY(40, $currentY); $pdf->Cell(22, 5, '', 1, 0, 'C');
-        $pdf->SetXY(62, $currentY); $pdf->Cell(25, 5, '', 1, 0, 'C');
-        $pdf->SetXY(87, $currentY); $pdf->Cell(25, 5, '', 1, 0, 'C');
-        $pdf->SetXY(112, $currentY); $pdf->Cell(45, 5, '', 1, 0, 'C');
-        $pdf->SetXY(157, $currentY); $pdf->Cell(30, 5, '', 1, 0, 'C');
-        $pdf->SetXY(187, $currentY); $pdf->Cell(30, 5, '', 1, 0, 'C');
-        $pdf->SetXY(217, $currentY); $pdf->Cell(55, 5, '', 1, 1, 'C');
-        $currentY = $pdf->GetY();
-    }
-}
-
-// Totals row
-if (count($results) > 0) {
+// Function to render a section with indented items
+function renderSection($pdf, $x, $label_width, $amount_width, $section_title, $items, $is_total = false) {
+    $startY = $pdf->GetY();
+    $pdf->SetX($x);
     $pdf->SetFont('Arial', 'B', 8);
-    $pdf->SetXY(112, $currentY);
-    $pdf->Cell(45, 7, 'TOTAL', 1, 0, 'R');
-    $pdf->SetXY(157, $currentY);
-    $pdf->Cell(30, 7, number_format($totalDebit, 2), 1, 0, 'R');
-    $pdf->SetXY(187, $currentY);
-    $pdf->Cell(30, 7, number_format($totalCredit, 2), 1, 0, 'R');
-    $pdf->SetXY(217, $currentY);
-    $pdf->Cell(55, 7, '', 1, 1, 'R');
-    $currentY = $pdf->GetY();
+    $pdf->Cell($label_width, 6, $section_title, 0, 1, 'L');
+    
+    $pdf->SetFont('Arial', '', 8);
+    foreach ($items as $label => $amount) {
+        // Skip the total placeholders for now, we'll handle them separately
+        if (strpos($label, 'Total') !== false && $label != $section_title) {
+            continue;
+        }
+        $pdf->SetX($x + 3); // Indent items
+        $pdf->Cell($label_width - 3, 5, $label, 0, 0, 'L');
+        $pdf->SetX($x + $label_width);
+        $pdf->Cell($amount_width, 5, formatCurrency($amount), 0, 1, 'R');
+    }
+    
+    // Render total line if provided in items
+    $total_key = 'Total ' . $section_title;
+    if (isset($items[$total_key])) {
+        $pdf->SetX($x);
+        $pdf->SetFont('Arial', 'B', 8);
+        $pdf->Cell($label_width, 6, $total_key, 'T', 0, 'L');
+        $pdf->SetX($x + $label_width);
+        $pdf->Cell($amount_width, 6, formatCurrency($items[$total_key]), 'T', 1, 'R');
+        $pdf->SetFont('Arial', '', 8);
+    }
+    return $pdf->GetY();
 }
 
-$Y = $currentY + 10;
+// Render Assets section (left column)
+$currentY = renderSection($pdf, $leftX, $col_left_label, $col_left_amount, 'CURRENT ASSETS', $assets['CURRENT ASSETS']);
+$pdf->SetY($currentY);
+$currentY = renderSection($pdf, $leftX, $col_left_label, $col_left_amount, 'NON-CURRENT ASSETS', $assets['NON-CURRENT ASSETS']);
+$pdf->SetY($currentY);
+$pdf->SetX($leftX);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell($col_left_label, 7, 'TOTAL ASSETS', 'T', 0, 'L');
+$pdf->SetX($leftX + $col_left_label);
+$pdf->Cell($col_left_amount, 7, formatCurrency($assets['TOTAL ASSETS']), 'T', 1, 'R');
+$assets_end_y = $pdf->GetY();
 
-// Prepared by section
+// Render LIABILITIES section (right column)
+$pdf->SetXY($rightX, $Y);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell($col_right_label, 8, 'LIABILITIES AND EQUITY', 0, 0, 'L');
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell($col_right_amount, 8, 'Amount', 0, 1, 'R');
+
+// Liabilities subsection
+$currentY_right = renderSection($pdf, $rightX, $col_right_label, $col_right_amount, 'CURRENT LIABILITIES', $liabilities['CURRENT LIABILITIES']);
+$pdf->SetY($currentY_right);
+$currentY_right = renderSection($pdf, $rightX, $col_right_label, $col_right_amount, 'NON-CURRENT LIABILITIES', $liabilities['NON-CURRENT LIABILITIES']);
+$pdf->SetY($currentY_right);
+$pdf->SetX($rightX);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell($col_right_label, 6, 'TOTAL LIABILITIES', 'T', 0, 'L');
+$pdf->SetX($rightX + $col_right_label);
+$pdf->Cell($col_right_amount, 6, formatCurrency($liabilities['TOTAL LIABILITIES']), 'T', 1, 'R');
+
+// Equity subsection
+$pdf->SetY($pdf->GetY() + 2);
+$currentY_right = renderSection($pdf, $rightX, $col_right_label, $col_right_amount, 'EQUITY', $equity['EQUITY']);
+$pdf->SetY($currentY_right);
+$pdf->SetX($rightX);
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->Cell($col_right_label, 7, 'TOTAL LIABILITIES AND EQUITY', 'T', 0, 'L');
+$pdf->SetX($rightX + $col_right_label);
+$pdf->Cell($col_right_amount, 7, formatCurrency($total_liabilities_equity), 'T', 1, 'R');
+
+// Determine the maximum Y position to add spacing after
+$max_y = max($assets_end_y, $pdf->GetY()) + 8;
+
+// ==================== SUMMARY / VERIFICATION SECTION ====================
+$pdf->SetY($max_y);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell(0, 5, 'ACCOUNTING VERIFICATION', 0, 1, 'L');
+
 $pdf->SetFont('Arial', '', 8);
-$pdf->SetXY(15, $Y);
-$pdf->Cell(80, 5, 'Prepared by:', 0, 1, 'L');
-
-$Y = $pdf->GetY() + 3;
-$pdf->SetXY(15, $Y);
-$pdf->Cell(80, 5, '_________________________', 0, 1, 'L');
-
-$Y = $pdf->GetY();
-$pdf->SetXY(15, $Y);
+$pdf->Cell(0, 5, 'The accounting equation (Assets = Liabilities + Equity) is balanced.', 0, 1, 'L');
 $pdf->SetFont('Arial', '', 7);
-$pdf->Cell(80, 3, $this->cuser, 0, 1, 'L');
+$pdf->Cell(40, 4, 'Total Assets:', 0, 0, 'L');
+$pdf->SetFont('Arial', 'B', 7);
+$pdf->Cell(50, 4, 'PHP ' . formatCurrency($assets['TOTAL ASSETS']), 0, 1, 'L');
 
-$Y = $pdf->GetY();
-$pdf->SetXY(15, $Y);
-$pdf->Cell(80, 3, 'Printed Name / Signature', 0, 1, 'L');
-
-$Y = $pdf->GetY() + 3;
-
-// Generated by section
-$pdf->SetXY(150, $Y);
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(80, 5, 'Generated on:', 0, 1, 'L');
-
-$Y = $pdf->GetY() + 3;
-$pdf->SetXY(150, $Y);
-$pdf->Cell(80, 5, $formattedDate, 0, 1, 'L');
-
-$Y = $pdf->GetY();
-$pdf->SetXY(150, $Y);
 $pdf->SetFont('Arial', '', 7);
-$pdf->Cell(80, 3, 'System Generated Report', 0, 1, 'L');
+$pdf->Cell(40, 4, 'Total Liabilities + Equity:', 0, 0, 'L');
+$pdf->SetFont('Arial', 'B', 7);
+$pdf->Cell(50, 4, 'PHP ' . formatCurrency($total_liabilities_equity), 0, 1, 'L');
+
+// Difference check
+$difference = $assets['TOTAL ASSETS'] - $total_liabilities_equity;
+if (abs($difference) < 0.01) {
+    $pdf->SetFont('Arial', 'I', 7);
+    $pdf->SetTextColor(0, 150, 0);
+    $pdf->Cell(0, 4, '✓ The balance sheet is in balance.', 0, 1, 'L');
+} else {
+    $pdf->SetFont('Arial', 'I', 7);
+    $pdf->SetTextColor(255, 0, 0);
+    $pdf->Cell(0, 4, '⚠ Warning: The balance sheet is out of balance by PHP ' . formatCurrency($difference), 0, 1, 'L');
+}
+$pdf->SetTextColor(0, 0, 0);
+
+$currentY = $pdf->GetY() + 6;
+
+// ==================== SIGNATURE SECTION ====================
+$pdf->SetFont('Arial', '', 7);
+$pdf->SetXY($leftMargin, $currentY);
+$pdf->Cell(70, 4, 'Prepared by:', 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY() + 2);
+$pdf->Cell(70, 4, '_________________________', 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Signature over Printed Name', 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY() + 2);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(70, 4, $this->cuser, 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Prepared by', 0, 1, 'L');
+
+// Right side - Approved by
+$pdf->SetXY(110, $currentY);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(70, 4, 'Approved by:', 0, 1, 'L');
+
+$pdf->SetXY(110, $pdf->GetY() + 2);
+$pdf->Cell(70, 4, '_________________________', 0, 1, 'L');
+
+$pdf->SetXY(110, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Signature over Printed Name', 0, 1, 'L');
+
+$pdf->SetXY(110, $pdf->GetY() + 2);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(70, 4, '_________________________', 0, 1, 'L');
+
+$pdf->SetXY(110, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Accounting Head / Designee', 0, 1, 'L');
+
+// ==================== GENERATED INFO ====================
+$currentY = $pdf->GetY();
+if ($currentY > 260) {
+    $pdf->AddPage();
+    $currentY = 20;
+}
+
+$pdf->SetY($currentY + 8);
+$pdf->SetFont('Arial', '', 6);
+$pdf->SetX($leftMargin);
+$pdf->Cell(0, 3, 'Generated on: ' . $formattedDate, 0, 1, 'L');
+$pdf->SetX($leftMargin);
+$pdf->Cell(0, 3, 'Generated by: ' . $this->cuser, 0, 1, 'L');
+$pdf->SetX($leftMargin);
+$pdf->Cell(0, 3, 'System: SSLAI Accounting System', 0, 1, 'L');
+$pdf->SetX($leftMargin);
+$pdf->Cell(0, 3, 'As of Date: ' . $display_date, 0, 1, 'L');
 
 $pdf->Output();
 exit;

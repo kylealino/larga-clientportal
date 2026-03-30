@@ -1,254 +1,349 @@
 <?php
+// Cash Flow Statement PDF Generator
+// Professional format matching Balance Sheet and Income Statement
+
 $this->request = \Config\Services::request();
 $this->db = \Config\Database::connect();
 
+// Get date parameters
 $date_from = $this->request->getGet('date_from');
 $date_to = $this->request->getGet('date_to');
-$month = $this->request->getGet('month');
-$year = $this->request->getGet('year');
+
+if (empty($date_from) && empty($date_to)) {
+    // Default to current year-to-date
+    $date_to = date('Y-m-d');
+    $date_from = date('Y-m-d', strtotime('first day of january this year'));
+}
+
+$period_text = !empty($date_from) && !empty($date_to) 
+    ? 'For the period ' . date('F d, Y', strtotime($date_from)) . ' to ' . date('F d, Y', strtotime($date_to))
+    : 'For the period __________________ to __________________';
 
 $this->session = session();
 $this->cuser = $this->session->get('__xsys_myuserzicas__');
+if (empty($this->cuser)) {
+    $this->cuser = 'Demo User';
+}
+
 require APPPATH . 'ThirdParty/fpdf/fpdf.php';
 
 $currentDate = date("Y-m-d");
 $formattedDate = date("F j, Y", strtotime($currentDate));
 
-// Calculate date range if month/year is provided
-if (!empty($month) && !empty($year)) {
-    $monthNum = date('m', strtotime($month));
-    $date_from = $year . '-' . $monthNum . '-01';
-    $date_to = date('Y-m-d', strtotime($date_from . ' +1 month'));
-}
-
-// Get cash receipts data
-$query = $this->db->query("
-    SELECT 
-        j.journal_no,
-        j.posting_date,
-        j.reference_no,
-        j.remarks,
-        jd.account_code,
-        jd.account_name,
-        jd.debit_amount,
-        jd.credit_amount,
-        jd.description,
-        jd.cost_center
-    FROM tbl_journal j
-    INNER JOIN tbl_journal_details jd ON j.journal_id = jd.journal_id
-    WHERE j.journal_type = 'Cash Receipt'
-    AND j.status = 'Posted'
-");
-
-// Add date filters if provided
-if (!empty($date_from) && !empty($date_to)) {
-    $query = $this->db->query("
-        SELECT 
-            j.journal_no,
-            j.posting_date,
-            j.reference_no,
-            j.remarks,
-            jd.account_code,
-            jd.account_name,
-            jd.debit_amount,
-            jd.credit_amount,
-            jd.description,
-            jd.cost_center
-        FROM tbl_journal j
-        INNER JOIN tbl_journal_details jd ON j.journal_id = jd.journal_id
-        WHERE j.journal_type = 'Cash Receipt'
-        AND j.status = 'Posted'
-        AND j.posting_date BETWEEN ? AND ?
-        ORDER BY j.posting_date ASC
-    ", [$date_from, $date_to]);
-}
-
-$results = $query->getResultArray();
-
-// Calculate totals
-$totalDebit = 0;
-$totalCredit = 0;
-foreach ($results as $row) {
-    $totalDebit += floatval($row['debit_amount']);
-    $totalCredit += floatval($row['credit_amount']);
-}
-
 class PDF extends \FPDF {
     function Footer() {
-        // Position from bottom
-        $this->SetY(-15);
-        
-        // Centered disclaimer
+        $this->SetY(-12);
         $this->SetFont('Arial', '', 6);
-        $this->Cell(0, 5, 
-            'This is a computer-generated document. No signature is required.', 
-            0, 0, 'C'
-        );
-        
-        // Page number
-        $this->SetXY(-40, -15);
-        $this->SetFont('Arial', 'I', 8);
-        $this->Cell(30, 5, 'Page ' . $this->PageNo() . ' of {nb}', 0, 0, 'R');
+        $this->Cell(0, 3, 'This is a computer-generated document. No signature is required.', 0, 0, 'C');
+        $this->SetXY(-35, -12);
+        $this->SetFont('Arial', 'I', 6);
+        $this->Cell(25, 3, 'Page ' . $this->PageNo() . ' of {nb}', 0, 0, 'R');
     }
 }
 
-$pdf = new PDF('L', 'mm', 'LEGAL');
+$pdf = new PDF('P', 'mm', 'A4');
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetTitle('Cash Receipts Journal');
-$pdf->SetXY(0, 8);
+$pdf->SetTitle('Cash Flow Statement');
 
-$Y = 4;
+// Set margins
+$leftMargin = 15;
+$rightMargin = 15;
+$pdf->SetLeftMargin($leftMargin);
+$pdf->SetRightMargin($rightMargin);
 
-// Company Header
+// Column widths
+$col_label = 120;    // Account label width
+$col_amount = 45;    // Amount column width
+
+$Y = 12;
+
+// ==================== HEADER ====================
+$pdf->SetY($Y);
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(0, 6, 'SCIENCE SAVINGS AND LOAN ASSOCIATION INC.', 0, 1, 'C');
+
+$pdf->SetFont('Arial', 'B', 11);
+$pdf->Cell(0, 5, 'STATEMENT OF CASH FLOWS', 0, 1, 'C');
+
+$pdf->SetFont('Arial', '', 8);
+$pdf->Cell(0, 4, $period_text, 0, 1, 'C');
+
 $Y = $pdf->GetY() + 4;
 
-$pdf->SetFont('Arial', 'B', 12);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 4, 'DEPARTMENT OF SCIENCE AND TECHNOLOGY', 0, 1, 'C');
+// ==================== TABLE HEADER ====================
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(240, 240, 240);
+$pdf->SetX($leftMargin);
+$pdf->Cell($col_label, 8, 'CASH FLOW ACTIVITIES', 1, 0, 'L', true);
+$pdf->Cell($col_amount, 8, 'AMOUNT (PHP)', 1, 1, 'R', true);
 
-$Y = $pdf->GetY();
+$startX = $leftMargin;
+
+// Helper function
+function formatCurrency($amount) {
+    return number_format($amount, 2);
+}
+
+// ==================== MOCKUP DATA ====================
+// CASH FLOWS FROM OPERATING ACTIVITIES
+$operating_activities = [
+    'Net Income' => 474500.00,
+    'Adjustments for non-cash items:' => null,
+    'Depreciation Expense' => 28000.00,
+    'Provision for Bad Debts' => 25000.00,
+    'Changes in working capital:' => null,
+    '(Increase)/Decrease in Accounts Receivable' => -45000.00,
+    '(Increase)/Decrease in Loans Receivable' => -125000.00,
+    'Increase/(Decrease) in Accounts Payable' => 35000.00,
+    'Increase/(Decrease) in Accrued Expenses' => 12500.00,
+    'Increase/(Decrease) in Due to Borrowers' => 75000.00,
+];
+
+// CASH FLOWS FROM INVESTING ACTIVITIES
+$investing_activities = [
+    'Proceeds from Sale of Assets' => 15000.00,
+    'Purchase of Property and Equipment' => -95000.00,
+    'Purchase of Intangible Assets' => -25000.00,
+];
+
+// CASH FLOWS FROM FINANCING ACTIVITIES
+$financing_activities = [
+    'Proceeds from Notes Payable' => 100000.00,
+    'Repayment of Notes Payable' => -50000.00,
+    'Dividends Paid' => -75000.00,
+    'Share Capital Contributions' => 0,
+];
+
+// Calculate subtotals
+$net_cash_operating = 0;
+$operating_calculated = [];
+
+foreach ($operating_activities as $label => $amount) {
+    if ($amount !== null) {
+        $net_cash_operating += $amount;
+        $operating_calculated[$label] = $amount;
+    }
+}
+
+$net_cash_investing = array_sum($investing_activities);
+$net_cash_financing = array_sum($financing_activities);
+$net_increase_cash = $net_cash_operating + $net_cash_investing + $net_cash_financing;
+
+// Beginning and Ending Cash balances
+$beginning_cash = 1250000.00;
+$ending_cash = $beginning_cash + $net_increase_cash;
+
+// ==================== RENDER CONTENT ====================
+
+// CASH FLOWS FROM OPERATING ACTIVITIES
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetX($startX);
+$pdf->Cell($col_label, 7, 'A. CASH FLOWS FROM OPERATING ACTIVITIES', 0, 1, 'L');
+
+$pdf->SetFont('Arial', '', 8);
+foreach ($operating_activities as $label => $amount) {
+    if ($amount === null) {
+        // Section header within operating activities
+        $pdf->SetX($startX + 3);
+        $pdf->SetFont('Arial', 'B', 7);
+        $pdf->Cell($col_label - 3, 5, $label, 0, 1, 'L');
+        $pdf->SetFont('Arial', '', 8);
+    } else {
+        $pdf->SetX($startX + 5);
+        $pdf->Cell($col_label - 5, 5.5, $label, 0, 0, 'L');
+        $pdf->SetX($startX + $col_label);
+        
+        // Color negative amounts in red
+        if ($amount < 0) {
+            $pdf->SetTextColor(200, 0, 0);
+        }
+        $pdf->Cell($col_amount, 5.5, formatCurrency($amount), 0, 1, 'R');
+        $pdf->SetTextColor(0, 0, 0);
+    }
+}
+
+$pdf->SetX($startX);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell($col_label, 6, 'Net Cash Provided by Operating Activities', 'T', 0, 'L');
+$pdf->SetX($startX + $col_label);
+if ($net_cash_operating < 0) {
+    $pdf->SetTextColor(200, 0, 0);
+}
+$pdf->Cell($col_amount, 6, formatCurrency($net_cash_operating), 'T', 1, 'R');
+$pdf->SetTextColor(0, 0, 0);
+
+$pdf->Ln(3);
+
+// CASH FLOWS FROM INVESTING ACTIVITIES
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetX($startX);
+$pdf->Cell($col_label, 7, 'B. CASH FLOWS FROM INVESTING ACTIVITIES', 0, 1, 'L');
+
+$pdf->SetFont('Arial', '', 8);
+foreach ($investing_activities as $label => $amount) {
+    $pdf->SetX($startX + 5);
+    $pdf->Cell($col_label - 5, 5.5, $label, 0, 0, 'L');
+    $pdf->SetX($startX + $col_label);
+    if ($amount < 0) {
+        $pdf->SetTextColor(200, 0, 0);
+    }
+    $pdf->Cell($col_amount, 5.5, formatCurrency($amount), 0, 1, 'R');
+    $pdf->SetTextColor(0, 0, 0);
+}
+
+$pdf->SetX($startX);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell($col_label, 6, 'Net Cash Used in Investing Activities', 'T', 0, 'L');
+$pdf->SetX($startX + $col_label);
+if ($net_cash_investing < 0) {
+    $pdf->SetTextColor(200, 0, 0);
+}
+$pdf->Cell($col_amount, 6, formatCurrency($net_cash_investing), 'T', 1, 'R');
+$pdf->SetTextColor(0, 0, 0);
+
+$pdf->Ln(3);
+
+// CASH FLOWS FROM FINANCING ACTIVITIES
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetX($startX);
+$pdf->Cell($col_label, 7, 'C. CASH FLOWS FROM FINANCING ACTIVITIES', 0, 1, 'L');
+
+$pdf->SetFont('Arial', '', 8);
+foreach ($financing_activities as $label => $amount) {
+    $pdf->SetX($startX + 5);
+    $pdf->Cell($col_label - 5, 5.5, $label, 0, 0, 'L');
+    $pdf->SetX($startX + $col_label);
+    if ($amount < 0) {
+        $pdf->SetTextColor(200, 0, 0);
+    }
+    $pdf->Cell($col_amount, 5.5, formatCurrency($amount), 0, 1, 'R');
+    $pdf->SetTextColor(0, 0, 0);
+}
+
+$pdf->SetX($startX);
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->Cell($col_label, 6, 'Net Cash Provided by Financing Activities', 'T', 0, 'L');
+$pdf->SetX($startX + $col_label);
+if ($net_cash_financing < 0) {
+    $pdf->SetTextColor(200, 0, 0);
+}
+$pdf->Cell($col_amount, 6, formatCurrency($net_cash_financing), 'T', 1, 'R');
+$pdf->SetTextColor(0, 0, 0);
+
+$pdf->Ln(3);
+
+// NET INCREASE/DECREASE IN CASH
+$pdf->SetFont('Arial', 'B', 9);
+$pdf->SetFillColor(245, 245, 245);
+$pdf->SetX($startX);
+$pdf->Cell($col_label, 7, 'D. NET INCREASE (DECREASE) IN CASH', 0, 0, 'L');
+$pdf->SetX($startX + $col_label);
+if ($net_increase_cash < 0) {
+    $pdf->SetTextColor(200, 0, 0);
+}
+$pdf->Cell($col_amount, 7, formatCurrency($net_increase_cash), 0, 1, 'R');
+$pdf->SetTextColor(0, 0, 0);
+
+$pdf->Ln(2);
+
+// CASH AT BEGINNING OF PERIOD
+$pdf->SetFont('Arial', '', 8);
+$pdf->SetX($startX + 5);
+$pdf->Cell($col_label - 5, 5.5, 'Cash at Beginning of Period', 0, 0, 'L');
+$pdf->SetX($startX + $col_label);
+$pdf->Cell($col_amount, 5.5, formatCurrency($beginning_cash), 0, 1, 'R');
+
+// CASH AT END OF PERIOD
 $pdf->SetFont('Arial', 'B', 10);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 4, 'FOOD AND NUTRITION RESEARCH INSTITUTE', 0, 1, 'C');
+$pdf->SetFillColor(230, 240, 255);
+$pdf->SetX($startX);
+$pdf->Cell($col_label, 8, 'CASH AT END OF PERIOD', 'T', 0, 'L', true);
+$pdf->SetX($startX + $col_label);
+$pdf->Cell($col_amount, 8, formatCurrency($ending_cash), 'T', 1, 'R', true);
 
-$Y = $pdf->GetY();
-$pdf->SetFont('Arial', 'B', 14);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 6, 'CASH RECEIPTS JOURNAL', 0, 1, 'C');
+$currentY = $pdf->GetY() + 5;
 
-$Y = $pdf->GetY();
-$pdf->SetFont('Arial', '', 10);
-$pdf->SetXY(165, $Y);
-$pdf->Cell(30, 5, 'For the period ' . date('F d, Y', strtotime($date_from)) . ' to ' . date('F d, Y', strtotime($date_to)), 0, 1, 'C');
+// ==================== SUPPLEMENTARY INFORMATION ====================
+$pdf->SetFont('Arial', 'B', 8);
+$pdf->SetX($startX);
+$pdf->Cell(0, 5, 'SUPPLEMENTARY INFORMATION:', 0, 1, 'L');
 
-$Y = $pdf->GetY() + 8;
-
-// Table Header
+$pdf->SetFont('Arial', '', 7);
+$pdf->SetX($startX + 5);
+$pdf->Cell(60, 4, 'Interest Paid:', 0, 0, 'L');
 $pdf->SetFont('Arial', 'B', 7);
-$pdf->SetFillColor(220, 220, 220);
+$pdf->Cell(50, 4, formatCurrency(125000.00), 0, 0, 'L');
 
-$pdf->SetXY(15, $Y);
-$pdf->Cell(25, 8, 'Journal No', 1, 0, 'C', true);
-$pdf->Cell(22, 8, 'Date', 1, 0, 'C', true);
-$pdf->Cell(25, 8, 'Reference', 1, 0, 'C', true);
-$pdf->Cell(25, 8, 'Account Code', 1, 0, 'C', true);
-$pdf->Cell(45, 8, 'Account Name', 1, 0, 'C', true);
-$pdf->Cell(30, 8, 'Debit', 1, 0, 'C', true);
-$pdf->Cell(30, 8, 'Credit', 1, 0, 'C', true);
-$pdf->Cell(60, 8, 'Description', 1, 1, 'C', true);
-
-$Y = $pdf->GetY();
 $pdf->SetFont('Arial', '', 7);
+$pdf->Cell(50, 4, 'Income Tax Paid:', 0, 0, 'L');
+$pdf->SetFont('Arial', 'B', 7);
+$pdf->Cell(50, 4, formatCurrency(85000.00), 0, 1, 'L');
 
-// Table Content
-if (count($results) > 0) {
-    foreach ($results as $row) {
-        $startY = $pdf->GetY();
-        
-        // MultiCell for description (might wrap)
-        $pdf->SetXY(272, $startY);
-        $pdf->MultiCell(60, 5, $row['description'], 0, 'L');
-        $endY = $pdf->GetY();
-        $rowHeight = $endY - $startY;
-        if ($rowHeight < 5) $rowHeight = 5;
-        
-        // Draw borders for all cells
-        $pdf->SetXY(15, $startY); $pdf->Cell(25, $rowHeight, '', 1);
-        $pdf->SetXY(40, $startY); $pdf->Cell(22, $rowHeight, '', 1);
-        $pdf->SetXY(62, $startY); $pdf->Cell(25, $rowHeight, '', 1);
-        $pdf->SetXY(87, $startY); $pdf->Cell(25, $rowHeight, '', 1);
-        $pdf->SetXY(112, $startY); $pdf->Cell(45, $rowHeight, '', 1);
-        $pdf->SetXY(157, $startY); $pdf->Cell(30, $rowHeight, '', 1);
-        $pdf->SetXY(187, $startY); $pdf->Cell(30, $rowHeight, '', 1);
-        $pdf->SetXY(217, $startY); $pdf->Cell(55, $rowHeight, '', 1);
-        
-        // Center content vertically
-        $middleY = $startY + ($rowHeight / 2) - 2.5;
-        
-        $pdf->SetXY(15, $middleY); $pdf->Cell(25, 5, $row['journal_no'], 0, 0, 'C');
-        $pdf->SetXY(40, $middleY); $pdf->Cell(22, 5, date('m/d/Y', strtotime($row['posting_date'])), 0, 0, 'C');
-        $pdf->SetXY(62, $middleY); $pdf->Cell(25, 5, $row['reference_no'], 0, 0, 'C');
-        $pdf->SetXY(87, $middleY); $pdf->Cell(25, 5, $row['account_code'], 0, 0, 'C');
-        $pdf->SetXY(112, $middleY); $pdf->Cell(45, 5, substr($row['account_name'], 0, 30), 0, 0, 'L');
-        $pdf->SetXY(157, $middleY); $pdf->Cell(30, 5, number_format($row['debit_amount'], 2), 0, 0, 'R');
-        $pdf->SetXY(187, $middleY); $pdf->Cell(30, 5, number_format($row['credit_amount'], 2), 0, 0, 'R');
-        
-        $pdf->SetY($endY);
-    }
+$pdf->SetX($startX + 5);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(60, 4, 'Non-cash Investing and Financing Activities:', 0, 1, 'L');
+$pdf->SetX($startX + 10);
+$pdf->SetFont('Arial', '', 6.5);
+$pdf->Cell(0, 3.5, '- Acquisition of assets through loan payable: PHP 0.00', 0, 1, 'L');
+
+$currentY = $pdf->GetY() + 4;
+
+// ==================== SIGNATURE SECTION ====================
+// Left - Prepared by
+$pdf->SetFont('Arial', '', 7);
+$pdf->SetXY($leftMargin, $currentY);
+$pdf->Cell(70, 4, 'Prepared by:', 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY() + 1);
+$pdf->Cell(70, 4, '_________________________', 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Signature over Printed Name', 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY() + 1);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(70, 4, $this->cuser, 0, 1, 'L');
+
+$pdf->SetXY($leftMargin, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Prepared by', 0, 1, 'L');
+
+// Right - Approved by
+$pdf->SetXY(115, $currentY);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(70, 4, 'Approved by:', 0, 1, 'L');
+
+$pdf->SetXY(115, $pdf->GetY() + 1);
+$pdf->Cell(70, 4, '_________________________', 0, 1, 'L');
+
+$pdf->SetXY(115, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Signature over Printed Name', 0, 1, 'L');
+
+$pdf->SetXY(115, $pdf->GetY() + 1);
+$pdf->SetFont('Arial', '', 7);
+$pdf->Cell(70, 4, '_________________________', 0, 1, 'L');
+
+$pdf->SetXY(115, $pdf->GetY());
+$pdf->SetFont('Arial', '', 6);
+$pdf->Cell(70, 3, 'Accounting Head / Designee', 0, 1, 'L');
+
+// ==================== GENERATED INFO ====================
+$finalY = $pdf->GetY() + 5;
+
+if ($finalY < 270) {
+    $pdf->SetY($finalY);
 } else {
-    // No data found
-    $pdf->SetXY(15, $Y);
-    $pdf->Cell(262, 10, 'No transactions found for the selected period.', 1, 1, 'C');
-    $Y = $pdf->GetY();
+    $pdf->SetY(265);
 }
 
-$currentY = $pdf->GetY();
-
-// Fill empty rows on first page
-if ($pdf->PageNo() == 1 && count($results) > 0) {
-    while ($currentY < 180) {
-        $pdf->SetXY(15, $currentY); $pdf->Cell(25, 5, '', 1, 0, 'C');
-        $pdf->SetXY(40, $currentY); $pdf->Cell(22, 5, '', 1, 0, 'C');
-        $pdf->SetXY(62, $currentY); $pdf->Cell(25, 5, '', 1, 0, 'C');
-        $pdf->SetXY(87, $currentY); $pdf->Cell(25, 5, '', 1, 0, 'C');
-        $pdf->SetXY(112, $currentY); $pdf->Cell(45, 5, '', 1, 0, 'C');
-        $pdf->SetXY(157, $currentY); $pdf->Cell(30, 5, '', 1, 0, 'C');
-        $pdf->SetXY(187, $currentY); $pdf->Cell(30, 5, '', 1, 0, 'C');
-        $pdf->SetXY(217, $currentY); $pdf->Cell(55, 5, '', 1, 1, 'C');
-        $currentY = $pdf->GetY();
-    }
-}
-
-// Totals row
-if (count($results) > 0) {
-    $pdf->SetFont('Arial', 'B', 8);
-    $pdf->SetXY(112, $currentY);
-    $pdf->Cell(45, 7, 'TOTAL', 1, 0, 'R');
-    $pdf->SetXY(157, $currentY);
-    $pdf->Cell(30, 7, number_format($totalDebit, 2), 1, 0, 'R');
-    $pdf->SetXY(187, $currentY);
-    $pdf->Cell(30, 7, number_format($totalCredit, 2), 1, 0, 'R');
-    $pdf->SetXY(217, $currentY);
-    $pdf->Cell(55, 7, '', 1, 1, 'R');
-    $currentY = $pdf->GetY();
-}
-
-$Y = $currentY + 10;
-
-// Prepared by section
-$pdf->SetFont('Arial', '', 8);
-$pdf->SetXY(15, $Y);
-$pdf->Cell(80, 5, 'Prepared by:', 0, 1, 'L');
-
-$Y = $pdf->GetY() + 3;
-$pdf->SetXY(15, $Y);
-$pdf->Cell(80, 5, '_________________________', 0, 1, 'L');
-
-$Y = $pdf->GetY();
-$pdf->SetXY(15, $Y);
-$pdf->SetFont('Arial', '', 7);
-$pdf->Cell(80, 3, $this->cuser, 0, 1, 'L');
-
-$Y = $pdf->GetY();
-$pdf->SetXY(15, $Y);
-$pdf->Cell(80, 3, 'Printed Name / Signature', 0, 1, 'L');
-
-$Y = $pdf->GetY() + 3;
-
-// Generated by section
-$pdf->SetXY(150, $Y);
-$pdf->SetFont('Arial', '', 8);
-$pdf->Cell(80, 5, 'Generated on:', 0, 1, 'L');
-
-$Y = $pdf->GetY() + 3;
-$pdf->SetXY(150, $Y);
-$pdf->Cell(80, 5, $formattedDate, 0, 1, 'L');
-
-$Y = $pdf->GetY();
-$pdf->SetXY(150, $Y);
-$pdf->SetFont('Arial', '', 7);
-$pdf->Cell(80, 3, 'System Generated Report', 0, 1, 'L');
+$pdf->SetFont('Arial', '', 6);
+$pdf->SetX($leftMargin);
+$pdf->Cell(0, 3, 'Generated on: ' . $formattedDate . ' | Generated by: ' . $this->cuser . ' | System: SSLAI Accounting System', 0, 1, 'L');
+$pdf->SetX($leftMargin);
+$pdf->Cell(0, 3, 'Reporting Period: ' . $period_text, 0, 1, 'L');
 
 $pdf->Output();
 exit;

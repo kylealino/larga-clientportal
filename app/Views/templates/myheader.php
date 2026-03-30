@@ -463,41 +463,11 @@ $this->cuser = $this->session->get('__xsys_myuserzicas__');
                 <span class="rounded-3">
                   <i class="ti ti-file"></i>
                 </span>
-                <span class="hide-menu fs-2">Cash Receipts Journal</span>
+                <span class="hide-menu fs-2">Financial Reports</span>
               </a>
             </li> 
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="<?=site_url();?>myppmp?meaction=MAIN" aria-expanded="false">
-                <span class="rounded-3">
-                  <i class="ti ti-list-numbers"></i>
-                </span>
-                <span class="hide-menu fs-2">Cash Disbursement Journal</span>
-              </a>
-            </li> 
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="<?=site_url();?>myprocurement?meaction=PR-MAIN" aria-expanded="false">
-                <span class="rounded-3">
-                  <i class="ti ti-playlist-add"></i>
-                </span>
-                <span class="hide-menu fs-2">Balance Sheet</span>
-              </a>
-            </li> 
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="<?=site_url();?>myabstract?meaction=MAIN" aria-expanded="false">
-                <span class="rounded-3">
-                  <i class="ti ti-mist"></i>
-                </span>
-                <span class="hide-menu fs-2">Income Statement</span>
-              </a>
-            </li> 
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="<?=site_url();?>myabstract?meaction=MAIN" aria-expanded="false">
-                <span class="rounded-3">
-                  <i class="ti ti-mist"></i>
-                </span>
-                <span class="hide-menu fs-2">Cash Flow Statement</span>
-              </a>
-            </li> 
+
+
           </ul>
         </nav>
       </div>
