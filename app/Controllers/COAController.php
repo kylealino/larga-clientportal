@@ -24,7 +24,7 @@ class COAController  extends BaseController
                 return view('accounting/coa-main');
                 break;
 
-            case 'ACCOUNT-SAVE': 
+            case 'COA-SAVE': 
                 $this->mycoa->coa_save();
                 return redirect()->to('mycoa?meaction=MAIN');
                 break;

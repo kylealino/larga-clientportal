@@ -41,6 +41,20 @@ if(!empty($journal_id) || !is_null($journal_id)) {
     $approved_by = $data['approved_by'];
 
 }
+
+// Get all accounts from tbl_coa for autocomplete
+$accounts = $this->db->query("SELECT account_code, account_name FROM tbl_coa WHERE is_active = 1 ORDER BY account_code")->getResultArray();
+
+// Format for autocomplete
+$accountList = [];
+foreach($accounts as $acc) {
+    $accountList[] = [
+        'label' => $acc['account_code'] . ' - ' . $acc['account_name'], // what user sees
+        'value' => $acc['account_code'], // what goes in input
+        'account_name' => $acc['account_name'] // extra data for account name field
+    ];
+}
+
 echo view('templates/myheader.php');
 ?>
 <style>
@@ -72,15 +86,62 @@ echo view('templates/myheader.php');
     background: #198754;
 }
 
-/* INACTIVE (Blue - subtle) */
-.status-inactive {
-    background: rgba(13, 110, 253, 0.1);
+/* DRAFT (Warning - subtle) */
+.status-warning {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+}
+.status-warning::before {
+    background: #ffc107;
+}
+
+/* CANCELLED (Danger - subtle) */
+.status-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+.status-danger::before {
+    background: #dc3545;
+}
+
+/* jQuery UI Autocomplete Overrides */
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 9999;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0;
+}
+
+.ui-autocomplete .ui-menu-item {
+    list-style: none;
+    padding: 0;
+}
+
+.ui-autocomplete .ui-menu-item-wrapper {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    cursor: pointer;
+}
+
+.ui-autocomplete .ui-menu-item-wrapper:hover {
+    background: #f8f9fa;
     color: #0d6efd;
 }
-.status-inactive::before {
+
+.ui-autocomplete .ui-state-active {
     background: #0d6efd;
+    color: #fff;
+    border: none;
+    margin: 0;
 }
 </style>
+
 <div class="container-fluid">
     <div class="row me-myjournalentry-outp-msg mx-0">
     </div>
@@ -213,26 +274,26 @@ echo view('templates/myheader.php');
                                                         <i class="ti ti-plus"></i>
                                                     </a>
                                                 </div>
-                                            </td>
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="text" name="account_code" id="account_code" class="account_code form-control form-control-sm text-center" />
-                                            </td>
+                                                <input type="text" name="account_code" class="account_code form-control form-control-sm text-center" autocomplete="off" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="text" name="account_name" id="account_name" class="account_name form-control form-control-sm" />
-                                            </td>
+                                                <input type="text" name="account_name" class="account_name form-control form-control-sm" readonly style="background:#f8f9fa;" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="number" name="debit_amount" id="debit_amount" step="0.01" class="debit_amount form-control form-control-sm text-end debit_amount" />
-                                            </td>
+                                                <input type="number" name="debit_amount" step="0.01" class="debit_amount form-control form-control-sm text-end" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="number" name="credit_amount" id="credit_amount" step="0.01" class="credit_amount form-control form-control-sm text-end credit_amount" />
-                                            </td>
+                                                <input type="number" name="credit_amount" step="0.01" class="credit_amount form-control form-control-sm text-end" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <textarea name="description" id="description" rows="1" class="description form-control form-control-sm"></textarea>
-                                            </td>
+                                                <textarea name="description" rows="1" class="description form-control form-control-sm"></textarea>
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="text" name="cost_center" id="cost_center" class="cost_center form-control form-control-sm text-center" />
-                                            </td>
-                                        </tr>
+                                                <input type="text" name="cost_center" class="cost_center form-control form-control-sm text-center" />
+                                             </div>
+                                         </tr>
 
                                         <?php if(!empty($journal_id)):
                                             $query = $this->db->query("
@@ -243,7 +304,7 @@ echo view('templates/myheader.php');
                                             $result = $query->getResultArray();
                                             foreach ($result as $data):
                                         ?>
-                                        <tr>
+                                         <tr>
                                             <td class="text-center align-middle">
                                                 <div class="d-inline-flex gap-1 justify-content-center">
                                                     <a class="text-danger fs-5 bg-hover-danger nav-icon-hover" href="javascript:void(0)" onclick="$(this).closest('tr').remove();">
@@ -253,26 +314,26 @@ echo view('templates/myheader.php');
                                                         <i class="ti ti-plus"></i>
                                                     </a>
                                                 </div>
-                                            </td>
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="text" name="account_code" id="account_code" class="account_code form-control form-control-sm text-center" value="<?=$data['account_code'];?>" />
-                                            </td>
+                                                <input type="text" name="account_code" class="account_code form-control form-control-sm text-center" value="<?=$data['account_code'];?>" autocomplete="off" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="text" name="account_name" id="account_name" class="account_name form-control form-control-sm" value="<?=$data['account_name'];?>" />
-                                            </td>
+                                                <input type="text" name="account_name" class="account_name form-control form-control-sm" value="<?=$data['account_name'];?>" readonly style="background:#f8f9fa;" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="number" name="debit_amount" id="debit_amount" step="0.01" class="debit_amount form-control form-control-sm text-end debit_amount" value="<?=$data['debit_amount'];?>" />
-                                            </td>
+                                                <input type="number" name="debit_amount" step="0.01" class="debit_amount form-control form-control-sm text-end" value="<?=$data['debit_amount'];?>" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="number" name="credit_amount" id="credit_amount" step="0.01" class="credit_amount form-control form-control-sm text-end credit_amount" value="<?=$data['credit_amount'];?>" />
-                                            </td>
+                                                <input type="number" name="credit_amount" step="0.01" class="credit_amount form-control form-control-sm text-end" value="<?=$data['credit_amount'];?>" />
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <textarea name="description" rows="1" id="description" class="description form-control form-control-sm"><?=$data['description'];?></textarea>
-                                            </td>
+                                                <textarea name="description" rows="1" class="description form-control form-control-sm"><?=$data['description'];?></textarea>
+                                             </div>
                                             <td class="text-center align-middle">
-                                                <input type="text" name="cost_center" id="cost_center" class="cost_center form-control form-control-sm text-center" value="<?=$data['cost_center'];?>" />
-                                            </td>
-                                        </tr>
+                                                <input type="text" name="cost_center" class="cost_center form-control form-control-sm text-center" value="<?=$data['cost_center'];?>" />
+                                             </div>
+                                         </tr>
                                         <?php endforeach; endif;?>
                                     </tbody>
                                 </table>
@@ -294,7 +355,7 @@ echo view('templates/myheader.php');
         </div>
     </div>
 
-    <div class="card">
+    <div class="card mt-3">
         <div class="card-header p-1">
             <div class="row">
                 <div class="col-sm-6 d-flex align-items-center text-start">
@@ -308,7 +369,7 @@ echo view('templates/myheader.php');
         <div class="card-body p-0 px-4 py-2 my-2">
             <table id="datatablesSimple" class="table table-bordered table-striped table-hover">
                 <thead>
-                    <tr>
+                     <tr>
                         <th>Action</th>
                         <th>Journal No</th>
                         <th>Posting Date</th>
@@ -317,7 +378,7 @@ echo view('templates/myheader.php');
                         <th>Remarks</th>
                         <th>Status</th>
                         <th>Approved By</th>
-                    </tr>
+                     </tr>
                 </thead>
                 <tbody class="align-middle">
                     <?php if(!empty($journaldata)):
@@ -332,12 +393,12 @@ echo view('templates/myheader.php');
                             $status       = $data['status'];
                             $approved_by  = $data['approved_by'];
                     ?>
-                    <tr>
+                     <tr>
                         <td class="text-center align-middle">
                             <a class="text-info nav-icon-hover fs-6" href="myjournalentry?meaction=MAIN&journal_id=<?= $journal_id ?>" title="Edit Journal">
                                 <i class="ti ti-pencil"></i>
                             </a>
-                        </td>
+                         </td>
                         <td class="text-center"><?=$journal_no;?></td>
                         <td class="text-center"><?=date('Y-m-d', strtotime($posting_date));?></td>
                         <td class="text-center"><?=$reference_no;?></td>
@@ -349,9 +410,9 @@ echo view('templates/myheader.php');
                             ">
                                 <?=$status;?>
                             </span>
-                        </td>
+                         </td>
                         <td class="text-center"><?=$approved_by;?></td>
-                    </tr>
+                     </tr>
                     <?php endforeach; endif;?>
                 </tbody>
             </table>
@@ -360,25 +421,98 @@ echo view('templates/myheader.php');
     
 </div>
 
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="<?=base_url('assets/js/accounting/myjournalentry.js?v=1');?>"></script>
 <script src="<?=base_url('assets/js/mysysapps.js');?>"></script>
-<script>
-    __mysys_journal_ent.__journalentry_saving();
-    $(document).ready(function () {
-        $('#datatablesSimple').DataTable({
-            pageLength: 5,
-            lengthChange: false,
-            language: {
-            search: "Search:"
-            }
-        });
-    });
 
+<script>
+// Account list for autocomplete (formatted like your MOOEUACS)
+var accountList = <?= json_encode($accountList); ?>;
+
+// Apply jQuery UI Autocomplete to account code inputs
+$(document).on("focus", ".account_code", function () {
+    if (!$(this).data("ui-autocomplete")) {
+        $(this).autocomplete({
+            source: accountList,
+            minLength: 0,
+            select: function (event, ui) {
+                let row = $(this).closest('tr');
+                
+                // Set account code value
+                $(this).val(ui.item.value);
+                
+                // Set account name in the corresponding field
+                row.find('.account_name').val(ui.item.account_name);
+                
+                return false; // prevent default replace
+            }
+        }).autocomplete("instance")._renderItem = function(ul, item) {
+            // Custom rendering to show code and name
+            return $("<li>")
+                .append("<div class='ui-menu-item-wrapper'>" + item.label + "</div>")
+                .appendTo(ul);
+        };
+        
+        // Optional: Show dropdown on focus even with empty field
+        $(this).autocomplete("search", "");
+    }
+});
+
+// Also apply to new rows that might be added dynamically
+function initAccountAutocomplete(element) {
+    if (element && !$(element).data("ui-autocomplete")) {
+        $(element).autocomplete({
+            source: accountList,
+            minLength: 0,
+            select: function (event, ui) {
+                let row = $(this).closest('tr');
+                $(this).val(ui.item.value);
+                row.find('.account_name').val(ui.item.account_name);
+                return false;
+            }
+        }).autocomplete("instance")._renderItem = function(ul, item) {
+            return $("<li>")
+                .append("<div class='ui-menu-item-wrapper'>" + item.label + "</div>")
+                .appendTo(ul);
+        };
+    }
+}
+
+__mysys_journal_ent.__journalentry_saving();
+
+$(document).ready(function () {
+    $('#datatablesSimple').DataTable({
+        pageLength: 5,
+        lengthChange: false,
+        language: {
+            search: "Search:"
+        }
+    });
+    
+    // Initialize autocomplete for existing rows on page load
+    $('.account_code').each(function() {
+        if (!$(this).data("ui-autocomplete")) {
+            $(this).autocomplete({
+                source: accountList,
+                minLength: 0,
+                select: function (event, ui) {
+                    let row = $(this).closest('tr');
+                    $(this).val(ui.item.value);
+                    row.find('.account_name').val(ui.item.account_name);
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function(ul, item) {
+                return $("<li>")
+                    .append("<div class='ui-menu-item-wrapper'>" + item.label + "</div>")
+                    .appendTo(ul);
+            };
+        }
+    });
+});
 </script>
+
 <?php
     echo view('templates/myfooter.php');
 ?>
-
-

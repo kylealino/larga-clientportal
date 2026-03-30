@@ -49,7 +49,7 @@ function __mysys_journal_ent() {
 			// Insert above the clicked row
 			var currentRow = jQuery(elem).closest('tr');
 			templateRow.css('display', '').attr('id', 'tr_rec_' + mid);
-			templateRow.insertBefore(currentRow);
+			templateRow.insertAfter(currentRow);
 
 			jQuery('#account_code_' + mid).focus();
 
