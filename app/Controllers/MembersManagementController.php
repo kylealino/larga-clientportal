@@ -29,12 +29,18 @@ class MembersManagementController extends BaseController
                 $this->mymembers->members_save();
                 return redirect()->to('mymembers?meaction=MAIN');
                 break;
+
+            case 'MEMBERS-PRINT':
+				return view('members-management/members-profile-pdf');
+				break;
             
         }
     }
 
     private function loadMembersView() {
-
+        
+        $member_id = $this->request->getPostGet('member_id');
+        
         $membersdataquery = $this->db->query("
             SELECT
                 a.`member_id`,
@@ -45,6 +51,7 @@ class MembersManagementController extends BaseController
                 a.`address`,
                 a.`contact_number`,
                 a.`email`,
+                a.`role`,
                 (select loan_amount from tbl_loans where member_id = a.`member_id`) loan_amount
             FROM
                 `tbl_members` a
@@ -52,9 +59,9 @@ class MembersManagementController extends BaseController
                 member_id DESC
         ");
         $membersdata = $membersdataquery->getResultArray();
-
+        
         return view('members-management/members-main', [
-            'membersdata' => $membersdata
+            'membersdata' => $membersdata,
         ]);
     }
     
