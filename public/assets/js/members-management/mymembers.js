@@ -139,10 +139,6 @@ function __mysys_members_ent() {
 						cache: false,
 						success: function(data) {
 							jQuery('.me-mymembers-outp-msg').html(data);
-							// Optional: Reload the page or reset form after successful save
-							setTimeout(function() {
-								location.reload();
-							}, 1500);
 							return false;
 						},
 						error: function(xhr, status, error) {
@@ -165,6 +161,7 @@ function __mysys_members_ent() {
 		var pdfFrame = document.getElementById("pdfFrame");
 		var pdfModal = new bootstrap.Modal(document.getElementById("pdfModal"));
 
+		document.getElementById('pdfModalLabel').innerText = 'SSLAI Membership Profile Update Form';
 		pdfFrame.src = pdfUrl;
 		pdfModal.show();
 	};

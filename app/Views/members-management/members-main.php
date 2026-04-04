@@ -645,16 +645,13 @@ echo view('templates/myheader.php');
                     ?>
                     <tr>
                         <td class="text-center align-middle">
-                            <a class="text-info nav-icon-hover fs-6 me-2" href="mymembers?meaction=MAIN&member_id=<?= $member_id ?>" title="Edit Member">
-                                <i class="ti ti-pencil" aria-hidden="true"></i>
-                            </a>
-                            <a class="text-warning nav-icon-hover fs-6" href="mymembers?meaction=MAIN&member_id=<?= $member_id ?>" title="View loans">
-                                <i class="ti ti-file-dollar" aria-hidden="true"></i>
-                            </a>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-sm fs-6 text-primary p-0 border-0 bg-transparent" 
-                                        onclick="__mysys_members_ent.__showPdfInModal('<?= base_url('mymembers?meaction=MEMBERS-PRINT&member_id=') .$member_id?>')" 
-                                        title="Print Members Profile">
+                            <div class="d-flex text-warning justify-content-center gap-2">
+                                <a class="text-info nav-icon-hover fs-6 me-2" href="mymembers?meaction=MAIN&member_id=<?= $member_id ?>" title="Edit Member">
+                                    <i class="ti ti-pencil" aria-hidden="true"></i>
+                                </a>
+                                <button class="btn btn-sm fs-6 text-warning p-0 border-0 bg-transparent" 
+                                        onclick="__mysys_members_ent.__showPdfInModal('<?= base_url('mymembers?meaction=MEMBERS-PRINT&member_id='.$member_id) ?>')" 
+                                        title="Print Members Profile" >
                                 <i class="ti ti-printer"></i>
                                 </button>
                             </div>
@@ -678,7 +675,7 @@ echo view('templates/myheader.php');
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="pdfModalLabel">Membershi Profile Preview</h5>
+            <h5 class="modal-title" id="pdfModalLabel">Membership Profile Preview</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -689,7 +686,7 @@ echo view('templates/myheader.php');
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="<?=base_url('assets/js/members-management/mymembers.js?v=3');?>"></script>
+<script src="<?=base_url('assets/js/members-management/mymembers.js?v=4');?>"></script>
 <script src="<?=base_url('assets/js/mysysapps.js');?>"></script>
 
 <script>
