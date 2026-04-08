@@ -642,6 +642,8 @@ echo view('templates/myheader.php');
                             $address = $data['address'];
                             $contact_number = $data['contact_number'];
                             $email = $data['email'];
+                            $loan_count = $data['loan_count'];
+                            $loan_amount = $data['loan_amount'];
                     ?>
                     <tr>
                         <td class="text-center align-middle">
@@ -661,8 +663,8 @@ echo view('templates/myheader.php');
                         <td class="text-center"><?=$first_name;?></td>
                         <td class="text-center"><?=$contact_number;?></td>
                         <td class="text-center"><?=$email;?></td>
-                        <td class="text-center">1</td>
-                        <td class="text-center">P1,000,000.00</td>
+                        <td class="text-center"><?=$loan_count;?></td>
+                        <td class="text-center"><?=$loan_amount?></td>
                         <td class="text-center"><span class="status-pill status-active">Active</span></td>
                     </tr>
                     <?php endforeach; endif;?>

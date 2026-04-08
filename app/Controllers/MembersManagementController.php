@@ -42,21 +42,34 @@ class MembersManagementController extends BaseController
         $member_id = $this->request->getPostGet('member_id');
         
         $membersdataquery = $this->db->query("
-            SELECT
-                a.`member_id`,
-                a.`member_no`,
-                a.`first_name`,
-                a.`last_name`,
-                a.`middle_name`,
-                a.`address`,
-                a.`contact_number`,
-                a.`email`,
-                a.`role`,
-                (select loan_amount from tbl_loans where member_id = a.`member_id`) loan_amount
-            FROM
-                `tbl_members` a
-            ORDER BY
-                member_id DESC
+        SELECT
+            a.member_id,
+            a.member_no,
+            a.first_name,
+            a.last_name,
+            a.middle_name,
+            a.address,
+            a.contact_number,
+            a.email,
+
+            COUNT(l.loan_id) AS loan_count,
+            COALESCE(SUM(l.loan_amount), 0) AS loan_amount
+
+        FROM tbl_members a
+        LEFT JOIN tbl_loans l 
+            ON l.member_id = a.member_id
+
+        GROUP BY 
+            a.member_id,
+            a.member_no,
+            a.first_name,
+            a.last_name,
+            a.middle_name,
+            a.address,
+            a.contact_number,
+            a.email
+
+        ORDER BY a.member_id DESC;
         ");
         $membersdata = $membersdataquery->getResultArray();
         
