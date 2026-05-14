@@ -1,780 +1,722 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
-
+<html lang="en">
 <head>
-  <!-- Required meta tags -->
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="<?=base_url('assets/js/theme/app.init.js')?>"></script>
-
-  <link rel="shortcut icon" type="image/png" href="<?=base_url('assets/images/logos/sslai.png')?>" />
-  <!-- Core Css -->
-  <link rel="stylesheet" href="<?=base_url('assets/css/styles.css')?>" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>LARGA Enterprise | Client Portal Login</title>
+  <link rel="shortcut icon" type="image/png" href="<?=base_url('assets/images/logos/largaicon.png')?>" />
+  <!-- Google Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Additional custom styles for navy blue and yellow theme -->
   <style>
-    :root {
-      --navy-dark: #0a1a3a;
-      --navy-medium: #1a2e5a;
-      --navy-light: #2a3e6a;
-      --gold-primary: #f5b342;
-      --gold-light: #f5c542;
-      --gold-soft: #ffd966;
-    }
-    
-    body {
+    * {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: var(--navy-dark);
+      box-sizing: border-box;
     }
-    
-    #main-wrapper {
-      position: relative;
-      width: 100vw;
+
+    /* Premium Enterprise Color Palette */
+    :root {
+      --bg-primary: #F0F4F8;
+      --bg-white: #FFFFFF;
+      --card-white: #FFFFFF;
+      --blue-light: #E8F0FE;
+      --blue-primary: #0052CC;
+      --blue-dark: #003D99;
+      --blue-soft: #D6E6F9;
+      --blue-glow: rgba(0, 82, 204, 0.15);
+      --gray-50: #F8F9FC;
+      --gray-100: #F0F2F5;
+      --gray-200: #E4E7EC;
+      --gray-300: #D0D5DD;
+      --gray-500: #667085;
+      --gray-700: #344054;
+      --gray-900: #1A2C3E;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --info: #3B82F6;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.03), 0 1px 1px rgba(0,0,0,0.02);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.02);
+      --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.15);
+      --border: #E4E7EC;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #E8F0FE 0%, #F0F4F8 100%);
       height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      position: relative;
     }
-    
-    /* Canvas for interactive background */
-    #interactive-bg {
+
+    /* Animated gradient background */
+    .animated-bg {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
-    }
-    
-    .gradient-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 30% 40%, rgba(245, 180, 66, 0.12) 0%, rgba(10, 26, 58, 0.85) 70%);
+      background: radial-gradient(circle at 20% 50%, rgba(0, 82, 204, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(0, 82, 204, 0.04) 0%, transparent 60%);
       z-index: 1;
       pointer-events: none;
     }
-    
-    .content-wrapper {
-      position: relative;
-      z-index: 2;
+
+    /* Canvas animation */
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
+      display: block;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    /* Main container */
+    .login-wrapper {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      pointer-events: none;
+      padding: 2rem;
     }
-    
-    .auth-card {
-      pointer-events: auto;
-      animation: cardAppear 0.6s ease-out;
-    }
-    
-    @keyframes cardAppear {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    
-    .auth-card .card {
-      border: none;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.98);
-      transform: translateY(0);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border: 1px solid rgba(245, 180, 66, 0.2);
-    }
-    
-    .auth-card .card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 35px 60px -15px rgba(245, 180, 66, 0.3);
-      border-color: rgba(245, 180, 66, 0.4);
-    }
-    
-    .auth-card .card-body {
-      padding: 2.5rem 2.5rem;
-    }
-    
-    .logo-wrapper {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      position: relative;
-    }
-    
-    .logo-wrapper img {
-      width: 90px;
-      height: auto;
-      border-radius: 50%;
-      padding: 8px;
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
-      box-shadow: 0 10px 25px rgba(10, 26, 58, 0.4);
-      animation: float 4s ease-in-out infinite;
-      border: 2px solid var(--gold-primary);
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-8px) rotate(2deg); }
-    }
-    
-    .title-wrapper {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-    
-    .title-wrapper h2 {
-      color: var(--navy-dark);
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-      position: relative;
-      display: inline-block;
-      text-shadow: 0 2px 4px rgba(245, 180, 66, 0.1);
-    }
-    
-    .title-wrapper h2:after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 15%;
-      width: 70%;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold-primary), var(--gold-light), var(--gold-primary), transparent);
-      border-radius: 100px;
-    }
-    
-    .title-wrapper p {
-      color: var(--navy-light);
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 0;
-      letter-spacing: 0.3px;
-    }
-    
-    .form-label {
-      color: var(--navy-dark);
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .form-label i {
-      color: var(--gold-primary);
-      font-size: 1rem;
-    }
-    
-    .input-group-custom {
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-control {
-      border: 2px solid #edf2f7;
-      border-radius: 16px;
-      padding: 0.85rem 1.2rem;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      background: #fafbfc;
-    }
-    
-    .form-control:focus {
-      border-color: var(--gold-primary);
-      box-shadow: 0 0 0 4px rgba(245, 180, 66, 0.15);
-      transform: scale(1.02);
-      background: white;
-    }
-    
-    .form-control::placeholder {
-      color: #a0aec0;
-      font-size: 0.9rem;
-    }
-    
-    .form-check-input {
-      border-color: var(--navy-light);
-      width: 1.1rem;
-      height: 1.1rem;
-      cursor: pointer;
-    }
-    
-    .form-check-input:checked {
-      background-color: var(--navy-dark);
-      border-color: var(--navy-dark);
-    }
-    
-    .form-check-label {
-      color: #4a5568;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    
-    .forgot-link {
-      color: var(--navy-dark) !important;
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    
-    .forgot-link:after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--gold-primary);
-      transition: width 0.3s ease;
-    }
-    
-    .forgot-link:hover {
-      color: var(--gold-primary) !important;
-    }
-    
-    .forgot-link:hover:after {
+
+    /* Premium Card Design */
+    .login-card {
       width: 100%;
-    }
-    
-    .btn-signin {
-      background: linear-gradient(135deg, var(--navy-dark), var(--navy-medium));
-      color: white;
-      border: none;
-      border-radius: 16px;
-      padding: 0.9rem;
-      font-weight: 600;
-      font-size: 1rem;
-      letter-spacing: 0.5px;
-      transition: all 0.4s ease;
+      max-width: 500px;
+      background: var(--card-white);
+      border-radius: 32px;
+      border: 1px solid rgba(0, 82, 204, 0.08);
+      box-shadow: var(--shadow-xl);
+      padding: 2.8rem 2.5rem 3rem;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
       position: relative;
       overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 10px 20px -8px rgba(10, 26, 58, 0.5);
+      backdrop-filter: blur(0px);
     }
-    
-    .btn-signin:before {
+
+    .login-card::before {
       content: '';
       position: absolute;
       top: 0;
-      left: -100%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-primary), var(--blue-light), var(--blue-primary));
+      opacity: 0.6;
+    }
+
+    .login-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 28px 56px -12px rgba(0, 82, 204, 0.2);
+      border-color: rgba(0, 82, 204, 0.15);
+    }
+
+    /* Premium Brand Area */
+    .brand {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-dark) 100%);
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 82, 204, 0.25);
+      transition: transform 0.3s ease;
+    }
+
+    .logo-icon:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-icon i {
+      font-size: 42px;
+      color: white;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-700) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      color: var(--blue-primary);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tagline i {
+      font-size: 10px;
+      color: var(--blue-primary);
+    }
+
+    .tagline span {
+      background: var(--blue-light);
+      padding: 2px 12px;
+      border-radius: 30px;
+    }
+
+    .sub-brand {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--gray-500);
+      margin-top: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gray-50);
+      padding: 6px 14px;
+      border-radius: 40px;
+    }
+
+    /* Form styling - Premium */
+    .input-container {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+      font-size: 1rem;
+      transition: all 0.2s;
+      z-index: 2;
+    }
+
+    .form-input {
       width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.7s ease;
+      background: var(--bg-white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 1rem 1rem 1rem 3rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--gray-900);
+      transition: all 0.2s;
+      outline: none;
+      font-family: 'Inter', monospace;
     }
-    
-    .btn-signin:hover {
-      background: linear-gradient(135deg, var(--navy-medium), var(--navy-dark));
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px -8px var(--gold-primary);
+
+    .form-input:focus {
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 4px var(--blue-glow);
     }
-    
-    .btn-signin:hover:before {
-      left: 100%;
+
+    .form-input:focus + .input-icon {
+      color: var(--blue-primary);
     }
-    
-    .btn-signin:active {
+
+    .form-input::placeholder {
+      color: var(--gray-300);
+      font-weight: 400;
+      font-size: 0.9rem;
+    }
+
+    /* Premium Login Button */
+    .login-button {
+      width: 100%;
+      background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-dark) 100%);
+      border: none;
+      padding: 1rem;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      margin-top: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .login-button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .login-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 82, 204, 0.3);
+    }
+
+    .login-button:active {
       transform: translateY(0);
     }
-    
-    .error-message {
-      color: #dc3545;
-      font-size: 0.9rem;
+
+    .login-button i {
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .login-button:hover i {
+      transform: translateX(4px);
+    }
+
+    /* Register Link Section */
+    .register-link-section {
       text-align: center;
       margin-top: 1.5rem;
-      padding: 0.75rem 1rem;
-      background: rgba(220, 53, 69, 0.08);
-      border-radius: 12px;
-      border-left: 4px solid #dc3545;
-      animation: shake 0.5s ease;
+      padding-top: 1rem;
+      border-top: 1px solid var(--gray-200);
     }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
+
+    .register-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-500);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s;
     }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .auth-card .card-body {
-        padding: 2rem 1.5rem;
+
+    .register-link i {
+      color: var(--blue-primary);
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+    }
+
+    .register-link:hover {
+      color: var(--blue-primary);
+    }
+
+    .register-link:hover i {
+      transform: translateX(3px);
+    }
+
+    .register-link strong {
+      font-weight: 700;
+    }
+
+    /* Error message styling */
+    .error-msg {
+      background: rgba(239, 68, 68, 0.08);
+      border-left: 3px solid var(--danger);
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      margin-top: 1.2rem;
+      font-size: 0.75rem;
+      color: var(--danger);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Premium Footer Stats */
+    .footer-stats {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-top: 1px solid var(--gray-200);
+      padding-top: 1.5rem;
+      font-size: 0.7rem;
+      color: var(--gray-500);
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .stat:hover {
+      color: var(--blue-primary);
+    }
+
+    .stat i {
+      color: var(--blue-primary);
+      font-size: 0.8rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .stat:hover i {
+      opacity: 1;
+    }
+
+    /* Additional premium touches */
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1.5rem;
+      font-size: 0.65rem;
+      color: var(--gray-500);
+    }
+
+    .secure-badge i {
+      color: var(--success);
+      font-size: 0.7rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 550px) {
+      .login-card {
+        padding: 2rem 1.5rem 2.2rem;
+        margin: 0 1rem;
       }
-      
-      .title-wrapper h2 {
-        font-size: 1.9rem;
+      h1 {
+        font-size: 1.6rem;
       }
+      .logo-icon {
+        width: 65px;
+        height: 65px;
+      }
+      .logo-icon i {
+        font-size: 32px;
+      }
+    }
+
+    /* Loading state */
+    .login-button.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .login-button.loading i {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
   </style>
-
-  <title>S S L A I S</title>
 </head>
-
 <body>
-  <!-- Preloader -->
-  <div class="preloader">
-    <img src="<?=base_url('assets/images/logos/preloader.svg')?>" alt="loader" class="lds-ripple img-fluid" />
-  </div>
-  
-  <div id="main-wrapper">
-    <!-- Interactive Canvas Background -->
-    <canvas id="interactive-bg"></canvas>
+
+<canvas id="logisticsCanvas"></canvas>
+<div class="animated-bg"></div>
+
+<div class="login-wrapper">
+  <div class="login-card">
     
-    <!-- Gradient Overlay -->
-    <div class="gradient-overlay"></div>
-    
-    <!-- Content -->
-    <div class="content-wrapper">
-      <div class="row justify-content-center w-100">
-        <div class="col-md-8 col-lg-6 col-xxl-3 auth-card">
-          <div class="card mb-0">
-            <div class="card-body">
-              
-              <!-- Logo and Title Section -->
-              <div class="logo-wrapper">
-                <img src="<?=base_url('assets/images/logos/sslai.png?v=1')?>" alt="SSLAIS Logo" />
-              </div>
-              
-              <div class="title-wrapper">
-                <h2>SSLAIS</h2>
-                <p>Science Savings and Loan Association<br />Information System</p>
-              </div>
-              
-              <!-- Login Form -->
-              <form action="<?=site_url();?>mylogin-auth" method="post" novalidate>
-                <div class="mb-4">
-                  <label for="MyUsername" class="form-label">
-                    <i class="bi bi-person-badge"></i> Username
-                  </label>
-                  <input type="text" class="form-control" name="MyUsername" id="MyUsername" placeholder="Enter your username" required>
-                </div>
-                
-                <div class="mb-4">
-                  <label for="MyPassword" class="form-label">
-                    <i class="bi bi-shield-lock"></i> Password
-                  </label>
-                  <input type="password" class="form-control" name="MyPassword" id="MyPassword" placeholder="Enter your password" required>
-                </div>
-                
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-                    <label class="form-check-label" for="flexCheckChecked">
-                      Remember this Device
-                    </label>
-                  </div>
-                  <a class="forgot-link" href="">Forgot Password?</a>
-                </div>
-                
-                <button type="submit" class="btn-signin w-100 mb-4">
-                  Sign In
-                </button>
-                
-                <?php
-                  $cmesslogin = session()->getFlashdata('mesyszicas_memsg_login');
-                  if(!empty($cmesslogin)):
-                    echo "<div class=\"error-message\">
-                      <i class=\"bi bi-exclamation-triangle-fill me-2\"></i>
-                      {$cmesslogin}!
-                    </div>";
-                  endif;
-                ?>
-              </form>
-            </div>
-          </div>
-        </div>
+    <!-- Premium Brand Section -->
+    <div class="brand">
+      <div class="logo-icon">
+        <i class="fas fa-boxes"></i>
+      </div>
+      <h1>LARGA Enterprise</h1>
+      <div class="tagline">
+        <i class="fas fa-truck-fast"></i>
+        <span>CLIENT PORTAL</span>
+        <i class="fas fa-box"></i>
+      </div>
+      <div class="sub-brand">
+        <i class="fas fa-charging-station"></i> POWERED BY LARGA LOGISTICS
       </div>
     </div>
-    
-    <script>
-      function handleColorTheme(e) {
-        document.documentElement.setAttribute("data-color-theme", e);
+
+    <!-- Login Form - IDs unchanged for backend compatibility -->
+    <form action="<?=site_url();?>mylogin-auth" method="post" id="loginForm">
+      <div class="input-container">
+        <i class="fas fa-id-card input-icon"></i>
+        <input type="text" name="MyUsername" class="form-input" placeholder="Client ID / Account Number" autocomplete="username" required>
+      </div>
+      
+      <div class="input-container">
+        <i class="fas fa-key input-icon"></i>
+        <input type="password" name="MyPassword" class="form-input" placeholder="Portal Password" autocomplete="current-password" required>
+      </div>
+      
+      <button type="submit" class="login-button" id="loginButton">
+        <i class="fas fa-arrow-right-to-bracket"></i> ACCESS SECURE PORTAL
+      </button>
+
+      <?php
+      $msg = session()->getFlashdata('mesyszicas_memsg_login');
+      if(!empty($msg)){
+        echo "<div class='error-msg'><i class='fas fa-shield-exclamation'></i>".htmlspecialchars($msg)."</div>";
       }
-    </script>
+      ?>
+    </form>
+
+    <!-- Register Account Link -->
+    <div class="register-link-section">
+      <a href="<?=site_url();?>myregistration?meaction=MAIN" class="register-link">
+        <span>Don't have an account?</span>
+        <strong>Register New Account</strong>
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- Security & Trust Badges -->
+    <div class="secure-badge">
+      <i class="fas fa-lock"></i>
+      <span>256-bit SSL Encrypted</span>
+      <i class="fas fa-circle" style="font-size: 3px; color: var(--gray-300);"></i>
+      <i class="fas fa-shield-alt"></i>
+      <span>ISO 27001 Certified</span>
+    </div>
+
+    <!-- Premium Footer Stats -->
+    <div class="footer-stats">
+      <div class="stat"><i class="fas fa-headset"></i> 24/7 Priority Support</div>
+      <div class="stat"><i class="fas fa-chart-line"></i> Real-time Analytics</div>
+      <div class="stat"><i class="fas fa-file-shield"></i> Enterprise Security</div>
+    </div>
   </div>
-  
-  <div class="dark-transparent sidebartoggler"></div>
-  
-  <!-- Import Js Files -->
-  <script src="<?=base_url('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js')?>"></script>
-  <script src="<?=base_url('assets/libs/simplebar/dist/simplebar.min.js')?>"></script>
-  <script src="<?=base_url('assets/js/theme/app.init.js')?>"></script>
-  <script src="<?=base_url('assets/js/theme/theme.js')?>"></script>
-  <script src="<?=base_url('assets/js/theme/app.min.js')?>"></script>
-
-  <!-- solar icons -->
-  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  
-  <!-- Interactive Background Script - Improved Balance -->
-  <script>
-    (function() {
-      const canvas = document.getElementById('interactive-bg');
-      const ctx = canvas.getContext('2d');
-      
-      let mouseX = 0, mouseY = 0;
-      let mouseInside = false;
-      
-      // Set canvas size
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+</div>
+<script>
+  (function() {
+    // PREMIUM ENTERPRISE ANIMATION - Professional blue theme
+    const canvas = document.getElementById('logisticsCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    
+    // Premium particle system
+    let particles = [];
+    let connections = [];
+    
+    const PARTICLE_COUNT = 60;
+    const CONNECTION_DISTANCE = 180;
+    
+    class Particle {
+      constructor(x, y, vx, vy) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.size = 2 + Math.random() * 2;
+        this.alpha = 0.3 + Math.random() * 0.4;
       }
-      
-      // Track mouse movement
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        mouseInside = true;
-      });
-      
-      document.addEventListener('mouseleave', () => {
-        mouseInside = false;
-      });
-      
-      // Financial Dashboard Elements
-      class FinancialElement {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.originalX = this.x;
-          this.originalY = this.y;
-          this.size = Math.random() * 30 + 15;
-          this.opacity = Math.random() * 0.1 + 0.05;
-          this.phase = Math.random() * Math.PI * 2;
-        }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        // Boundary check with smooth bounce
+        if (this.x < 0) { this.x = 0; this.vx *= -0.98; }
+        if (this.x > width) { this.x = width; this.vx *= -0.98; }
+        if (this.y < 0) { this.y = 0; this.vy *= -0.98; }
+        if (this.y > height) { this.y = height; this.vy *= -0.98; }
       }
-      
-      // Peso Coins (More elegant)
-      class PesoCoin extends FinancialElement {
-        constructor() {
-          super();
-          this.size = Math.random() * 25 + 12;
-          this.rotation = Math.random() * Math.PI * 2;
-          this.rotationSpeed = (Math.random() - 0.5) * 0.01;
-        }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 82, 204, ${this.alpha * 0.5})`;
+        ctx.fill();
         
-        update() {
-          // Subtle floating motion
-          this.x = this.originalX + Math.sin(Date.now() * 0.001 + this.phase) * 20;
-          this.y = this.originalY + Math.cos(Date.now() * 0.001 + this.phase) * 10;
-          this.rotation += this.rotationSpeed;
-          
-          // Mouse interaction - gentle push
-          if (mouseInside) {
-            const dx = mouseX - this.x;
-            const dy = mouseY - this.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 200) {
-              const angle = Math.atan2(dy, dx);
-              const force = (200 - distance) / 200 * 3;
-              this.x -= Math.cos(angle) * force;
-              this.y -= Math.sin(angle) * force;
-            }
-          }
-        }
-        
-        draw() {
-          ctx.save();
-          ctx.translate(this.x, this.y);
-          ctx.rotate(this.rotation);
-          
-          // Draw coin
-          ctx.beginPath();
-          ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-          
-          // Gradient for coin
-          const gradient = ctx.createRadialGradient(-5, -5, 2, 0, 0, this.size);
-          gradient.addColorStop(0, `rgba(255, 215, 0, ${this.opacity * 2})`);
-          gradient.addColorStop(0.7, `rgba(245, 180, 66, ${this.opacity})`);
-          gradient.addColorStop(1, `rgba(200, 140, 40, ${this.opacity * 0.5})`);
-          
-          ctx.fillStyle = gradient;
-          ctx.fill();
-          ctx.strokeStyle = `rgba(245, 180, 66, ${this.opacity * 2})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-          
-          // Draw ₱ symbol
-          ctx.font = `bold ${this.size * 0.6}px 'Inter', Arial`;
-          ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 1.5})`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('₱', 0, 0);
-          
-          ctx.restore();
-        }
+        // Inner glow
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 82, 204, ${this.alpha})`;
+        ctx.fill();
       }
-      
-      // Growth Chart (Upward trend)
-      class GrowthChart {
-        constructor(x, y) {
-          this.x = x;
-          this.y = y;
-          this.width = 180;
-          this.height = 80;
-          this.points = [];
-          this.originalPoints = [];
-          this.opacity = 0.15;
+    }
+    
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        let x = Math.random() * width;
+        let y = Math.random() * height;
+        let vx = (Math.random() - 0.5) * 0.25;
+        let vy = (Math.random() - 0.5) * 0.25;
+        particles.push(new Particle(x, y, vx, vy));
+      }
+    }
+    
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
           
-          // Create upward trending data
-          for (let i = 0; i < 12; i++) {
-            const xPos = (i / 11) * this.width;
-            const trend = Math.sin(i * 0.8) * 15 + (i * 5); // Upward trend with waves
-            const yPos = this.y - 20 - trend;
-            this.points.push({x: xPos, y: yPos});
-            this.originalPoints.push({x: xPos, y: yPos});
-          }
-        }
-        
-        update() {
-          if (mouseInside) {
-            const dx = mouseX - (this.x + this.width/2);
-            const dy = mouseY - (this.y - this.height/2);
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 250) {
-              const influence = (250 - distance) / 250;
-              
-              // Create wave effect on graph
-              this.points.forEach((point, i) => {
-                const wave = Math.sin(Date.now() * 0.01 + i * 0.5) * influence * 12;
-                point.y = this.originalPoints[i].y - wave;
-              });
-            } else {
-              // Return to original
-              this.points.forEach((point, i) => {
-                point.y += (this.originalPoints[i].y - point.y) * 0.1;
-              });
-            }
-          }
-        }
-        
-        draw() {
-          ctx.save();
-          ctx.translate(this.x, this.y);
-          
-          // Draw area under graph
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          this.points.forEach(point => {
-            ctx.lineTo(point.x, point.y - this.y);
-          });
-          ctx.lineTo(this.width, 0);
-          ctx.closePath();
-          ctx.fillStyle = `rgba(245, 180, 66, ${this.opacity * 0.5})`;
-          ctx.fill();
-          
-          // Draw line
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(245, 180, 66, ${this.opacity * 1.5})`;
-          ctx.lineWidth = 2;
-          
-          this.points.forEach((point, i) => {
-            if (i === 0) {
-              ctx.moveTo(point.x, point.y - this.y);
-            } else {
-              ctx.lineTo(point.x, point.y - this.y);
-            }
-          });
-          
-          ctx.stroke();
-          
-          // Draw points
-          this.points.forEach(point => {
+          if (dist < CONNECTION_DISTANCE) {
+            const intensity = 1 - (dist / CONNECTION_DISTANCE);
             ctx.beginPath();
-            ctx.arc(point.x, point.y - this.y, 3, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(245, 180, 66, ${this.opacity * 2})`;
-            ctx.fill();
-          });
-          
-          ctx.restore();
-        }
-      }
-      
-      // Loan Bars (Like loan amounts)
-      class LoanBar {
-        constructor(x, y) {
-          this.x = x;
-          this.y = y;
-          this.width = 45;
-          this.height = Math.random() * 100 + 40;
-          this.targetHeight = this.height;
-          this.currentHeight = this.height;
-          this.opacity = Math.random() * 0.1 + 0.1;
-        }
-        
-        update() {
-          if (mouseInside) {
-            const dx = mouseX - (this.x + this.width/2);
-            const dy = mouseY - (this.y - this.height/2);
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 200) {
-              const influence = (200 - distance) / 200;
-              this.targetHeight = this.height * (1 + influence * 0.3);
-            } else {
-              this.targetHeight = this.height;
-            }
-          }
-          
-          // Smooth transition
-          this.currentHeight += (this.targetHeight - this.currentHeight) * 0.1;
-        }
-        
-        draw() {
-          // Draw bar
-          ctx.fillStyle = `rgba(245, 180, 66, ${this.opacity})`;
-          ctx.fillRect(this.x, this.y - this.currentHeight, this.width, this.currentHeight);
-          
-          // Draw outline
-          ctx.strokeStyle = `rgba(245, 180, 66, ${this.opacity * 2})`;
-          ctx.lineWidth = 1;
-          ctx.strokeRect(this.x, this.y - this.currentHeight, this.width, this.currentHeight);
-          
-          // Draw value on top
-          ctx.font = 'bold 10px Inter';
-          ctx.fillStyle = `rgba(245, 180, 66, ${this.opacity * 2})`;
-          ctx.textAlign = 'center';
-          ctx.fillText('₱' + Math.round(this.currentHeight * 1000), this.x + this.width/2, this.y - this.currentHeight - 5);
-        }
-      }
-      
-      // Create balanced composition
-      let pesoCoins = [];
-      let growthCharts = [];
-      let loanBars = [];
-      
-      function init() {
-        pesoCoins = [];
-        growthCharts = [];
-        loanBars = [];
-        
-        // Create fewer, better placed coins (15 coins)
-        for (let i = 0; i < 15; i++) {
-          pesoCoins.push(new PesoCoin());
-        }
-        
-        // Create growth charts (3 charts positioned strategically)
-        growthCharts.push(new GrowthChart(canvas.width * 0.15, canvas.height * 0.3));
-        growthCharts.push(new GrowthChart(canvas.width * 0.75, canvas.height * 0.6));
-        growthCharts.push(new GrowthChart(canvas.width * 0.85, canvas.height * 0.2));
-        
-        // Create loan bars (12 bars in groups)
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 3; j++) {
-            loanBars.push(new LoanBar(
-              canvas.width * 0.1 + i * 120 + j * 20,
-              canvas.height * 0.7 + j * 30
-            ));
-          }
-        }
-        
-        // Second group
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 3; j++) {
-            loanBars.push(new LoanBar(
-              canvas.width * 0.6 + i * 100 + j * 15,
-              canvas.height * 0.2 + j * 25
-            ));
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0, 82, 204, ${0.05 + intensity * 0.08})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
           }
         }
       }
+    }
+    
+    // Draw subtle grid pattern
+    let gridOffset = 0;
+    function drawGrid() {
+      gridOffset = (gridOffset + 0.2) % 50;
+      ctx.beginPath();
+      ctx.lineWidth = 0.5;
+      const step = 50;
       
-      // Animation loop
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw navy blue background with elegant gradient
-        const gradient = ctx.createRadialGradient(
-          canvas.width * 0.3, canvas.height * 0.4, 100,
-          canvas.width * 0.7, canvas.height * 0.6, canvas.width
-        );
-        gradient.addColorStop(0, '#0f1f45');
-        gradient.addColorStop(0.5, '#1a2e5a');
-        gradient.addColorStop(1, '#0a1a3a');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw subtle ledger lines
-        ctx.strokeStyle = 'rgba(245, 180, 66, 0.03)';
-        ctx.lineWidth = 0.5;
-        
-        for (let i = 0; i < canvas.height; i += 40) {
-          ctx.beginPath();
-          ctx.moveTo(0, i);
-          ctx.lineTo(canvas.width, i);
-          ctx.stroke();
-        }
-        
-        for (let i = 0; i < canvas.width; i += 40) {
-          ctx.beginPath();
-          ctx.moveTo(i, 0);
-          ctx.lineTo(i, canvas.height);
-          ctx.stroke();
-        }
-        
-        // Draw all elements with balanced layering
-        loanBars.forEach(bar => {
-          bar.update();
-          bar.draw();
-        });
-        
-        growthCharts.forEach(chart => {
-          chart.update();
-          chart.draw();
-        });
-        
-        pesoCoins.forEach(coin => {
-          coin.update();
-          coin.draw();
-        });
-        
-        // Draw mouse highlight effect
-        if (mouseInside) {
-          ctx.beginPath();
-          ctx.arc(mouseX, mouseY, 120, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(245, 180, 66, 0.15)';
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          
-          ctx.beginPath();
-          ctx.arc(mouseX, mouseY, 60, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(245, 180, 66, 0.25)';
-          ctx.stroke();
-        }
-        
-        requestAnimationFrame(animate);
+      for (let x = (gridOffset % step); x < width + step; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.strokeStyle = 'rgba(0, 82, 204, 0.03)';
+        ctx.stroke();
       }
+      for (let y = (gridOffset % step); y < height + step; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    }
+    
+    // Draw flowing particles (shipment simulation)
+    let flowOffset = 0;
+    function drawFlowLines() {
+      flowOffset = (flowOffset + 0.5) % 100;
       
-      // Handle resize
-      window.addEventListener('resize', () => {
-        resizeCanvas();
-        init();
-      });
+      for (let i = 0; i < 8; i++) {
+        const yPos = height * (0.2 + i * 0.08);
+        const startX = (flowOffset + i * 30) % (width + 200) - 100;
+        
+        ctx.beginPath();
+        ctx.moveTo(startX, yPos);
+        ctx.lineTo(startX + 60, yPos);
+        ctx.strokeStyle = 'rgba(0, 82, 204, 0.04)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        
+        // Add a moving dot on the line
+        const dotX = (flowOffset + i * 30 + Date.now() * 0.02) % (width + 200) - 100;
+        ctx.beginPath();
+        ctx.arc(dotX, yPos, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 82, 204, 0.15)';
+        ctx.fill();
+      }
+    }
+    
+    function animate() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
       
-      // Initialize
+      // Very subtle gradient overlay
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0, 'rgba(240, 244, 248, 0.1)');
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Update and draw elements
+      for (let p of particles) p.update();
+      
+      drawGrid();
+      drawFlowLines();
+      drawConnections();
+      
+      for (let p of particles) p.draw();
+      
+      requestAnimationFrame(animate);
+    }
+    
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initParticles();
+    }
+    
+    window.addEventListener('resize', () => {
       resizeCanvas();
-      init();
-      animate();
-      
-      // Remove preloader after page load
-      window.addEventListener('load', () => {
-        document.querySelector('.preloader').style.display = 'none';
+    });
+    
+    resizeCanvas();
+    animate();
+    
+    // Premium micro-interactions
+    const inputs = document.querySelectorAll('.form-input');
+    inputs.forEach(inp => {
+      inp.addEventListener('focus', () => {
+        inp.parentElement.style.transform = 'scale(1.01)';
       });
-    })();
-  </script>
+      inp.addEventListener('blur', () => {
+        inp.parentElement.style.transform = 'scale(1)';
+      });
+    });
+    
+    // Loading state on form submit
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    
+    if (loginForm) {
+      loginForm.addEventListener('submit', function(e) {
+        const username = document.querySelector('input[name="MyUsername"]').value;
+        const password = document.querySelector('input[name="MyPassword"]').value;
+        
+        if (username && password) {
+          loginButton.classList.add('loading');
+          loginButton.innerHTML = '<i class="fas fa-spinner"></i> AUTHENTICATING...';
+        }
+      });
+    }
+    
+    // Hover effect for stats
+    const stats = document.querySelectorAll('.stat');
+    stats.forEach(stat => {
+      stat.addEventListener('mouseenter', () => {
+        stat.style.transform = 'translateX(2px)';
+      });
+      stat.addEventListener('mouseleave', () => {
+        stat.style.transform = 'translateX(0)';
+      });
+    });
+  })();
+</script>
 </body>
-
 </html>
