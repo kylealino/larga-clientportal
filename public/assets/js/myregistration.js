@@ -47,7 +47,7 @@ function __mysys_myregistration_ent() {
 								toastr.success(data.message);
 
 								setTimeout(() => {
-									window.location.href = mesiteurl + '';
+									window.location.href = mesiteurl + 'myotp?meaction=MAIN&company_code=' + company_code.value;
 								}, 1500);
 
 							} else {

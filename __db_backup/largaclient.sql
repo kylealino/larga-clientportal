@@ -1,0 +1,201 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: May 15, 2026 at 10:09 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `largaclient`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `myua_user`
+--
+
+CREATE TABLE `myua_user` (
+  `recid` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `hash_password` varchar(200) NOT NULL,
+  `hash_value` varchar(150) NOT NULL,
+  `company_code` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `added_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `added_by` varchar(50) NOT NULL,
+  `is_active` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `myua_user`
+--
+
+INSERT INTO `myua_user` (`recid`, `username`, `hash_password`, `hash_value`, `company_code`, `email`, `added_at`, `added_by`, `is_active`) VALUES
+(1, 'FAD-ROMANA', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-04-23 07:21:50', 'admin', 1),
+(6, 'ADMIN-KYLE', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-05-16 08:55:10', 'admin', 1),
+(7, 'ADMIN-JOVY', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-05-16 09:30:39', 'admin', 1),
+(8, 'NFRDD-ROSEMARIE', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-07-14 13:44:32', 'admin', 1),
+(9, 'BS-MILDRED', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-07-14 13:58:09', 'admin', 1),
+(10, 'BS-ROSEFIL', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-07-14 13:58:38', 'admin', 1),
+(11, 'FAD-ALEXIS', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-07-14 15:23:50', 'CDS-KYLE', 1),
+(12, 'OD-LUCIEDEN', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-08-06 09:46:06', 'CDS-KYLE', 1),
+(13, 'FAD-ALEXIS', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-08-06 09:46:49', 'CDS-KYLE', 1),
+(14, 'TDSTSD-MILFLOR', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-08-06 09:47:48', 'CDS-KYLE', 1),
+(15, 'PO-DIVORAH', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-08-06 09:49:41', 'CDS-KYLE', 1),
+(16, 'SLG-LEAH', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-08-06 09:50:14', 'CDS-KYLE', 1),
+(17, 'NAMD-LILIBETH', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-08-12 10:17:07', 'CDS-KYLE', 1),
+(18, 'PPT-USER', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-10-09 10:06:04', 'ADMIN-KYLE', 1),
+(19, 'NAMD-MILDRED', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-10-21 16:18:42', 'ADMIN-KYLE', 1),
+(20, 'BS-ANN', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-12-02 10:38:43', 'ADMIN-KYLE', 1),
+(21, 'CDS-OJT', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-12-03 15:15:23', 'ADMIN-KYLE', 1),
+(22, 'TDSTSD-SALVADOR', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2025-12-11 10:12:16', 'ADMIN-KYLE', 1),
+(23, 'FAD-JESTER', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:35:05', 'ADMIN-KYLE', 1),
+(24, 'NAMD-EVA', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:35:38', 'ADMIN-KYLE', 1),
+(25, 'NAMD-LILIBETH', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:36:05', 'ADMIN-KYLE', 1),
+(26, 'NAMD-GLEN', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:36:26', 'ADMIN-KYLE', 1),
+(27, 'NAMD-MAE', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:37:27', 'ADMIN-KYLE', 1),
+(28, 'NAMD-STEPHANI ', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:37:48', 'ADMIN-KYLE', 1),
+(29, 'NAMD-MAYLENE', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:38:08', 'ADMIN-KYLE', 1),
+(30, 'NAMD-JEMN', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:38:36', 'ADMIN-KYLE', 1),
+(31, 'NAMD-RICA', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:38:55', 'ADMIN-KYLE', 1),
+(32, 'NAMD-ROWENA', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:39:14', 'ADMIN-KYLE', 1),
+(33, 'NAMD-EMILY', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:39:36', 'ADMIN-KYLE', 1),
+(34, 'NAMD-ROD', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:40:01', 'ADMIN-KYLE', 1),
+(35, 'NAMD-CHEDER', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', '', '', '2026-01-28 09:40:18', 'ADMIN-KYLE', 1),
+(36, 'TEST-USER', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', 'CSN-MCRITZ', 'kylealino@gmail.com', '2026-05-14 15:50:15', '', 1),
+(37, 'ASDASDASD', 'b0412597dcea813655574dc54a5b74967cf85317f0332a2591be7953a016f8de56200eb37d5ba593b1e4aa27cea5ca27100f94dccd5b04bae5cadd4454dba67d', '111111', 'TEASDASDASD', 'ASDASDAS@GMAIL.COM', '2026-05-14 15:56:30', '', 1),
+(38, 'asdasdadasd', 'b0412597dcea813655574dc54a5b74967cf85317f0332a2591be7953a016f8de56200eb37d5ba593b1e4aa27cea5ca27100f94dccd5b04bae5cadd4454dba67d', '111111', '123123123123', 'asdadss@gmail.com', '2026-05-14 15:58:43', '', 1),
+(39, 'TEST3', 'b0412597dcea813655574dc54a5b74967cf85317f0332a2591be7953a016f8de56200eb37d5ba593b1e4aa27cea5ca27100f94dccd5b04bae5cadd4454dba67d', '111111', 'ASDASDASD', 'adasdasd@gmail.com', '2026-05-14 16:00:15', '', 1),
+(40, 'TEST4', 'b0412597dcea813655574dc54a5b74967cf85317f0332a2591be7953a016f8de56200eb37d5ba593b1e4aa27cea5ca27100f94dccd5b04bae5cadd4454dba67d', '111111', 'TASDADASD', 'ASDASDAS@GMAIL.COM', '2026-05-14 16:01:53', '', 1),
+(41, 'test6', 'b0412597dcea813655574dc54a5b74967cf85317f0332a2591be7953a016f8de56200eb37d5ba593b1e4aa27cea5ca27100f94dccd5b04bae5cadd4454dba67d', '111111', 'asdasdadadsa', 'kylealino@gmail.com', '2026-05-14 16:05:00', '', 1),
+(42, 'asdasdasdas', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', 'asdasdasd', 'kyleal@gmail.com', '2026-05-14 16:06:48', '', 1),
+(43, 'asdasdasd', '2f078ff4f34a3c1d59a3dd1eac85e629c92800814bb442e81aa366849e59f0088b880af3ab2e1ff1dfc2e5c15217044bec27b61a15d259a7fcb413e5067aa5e8', 'asdasdasd', 'asdasdasdasd', 'asdasd@gmail.com', '2026-05-14 16:07:44', '', 1),
+(44, 'dadasd', '2f078ff4f34a3c1d59a3dd1eac85e629c92800814bb442e81aa366849e59f0088b880af3ab2e1ff1dfc2e5c15217044bec27b61a15d259a7fcb413e5067aa5e8', 'asdasdasd', 'asdasda', 'asdasd@gmail.com', '2026-05-14 16:09:13', '', 1),
+(45, 'dadasd', '2f078ff4f34a3c1d59a3dd1eac85e629c92800814bb442e81aa366849e59f0088b880af3ab2e1ff1dfc2e5c15217044bec27b61a15d259a7fcb413e5067aa5e8', 'asdasdasd', 'asdasda', 'asdasd@gmail.com', '2026-05-14 16:09:43', '', 1),
+(46, 'rere', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'rere', 'rere@gmail.com', '2026-05-14 16:20:18', '', 1),
+(47, 'rererqrqrq', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'qrqerqweq', 'asdasdad@gmail.com', '2026-05-14 16:24:09', '', 1),
+(48, 'tyytyty', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', '', 'adadasdasdasd', 'asdasdasdasda@gmail.com', '2026-05-14 16:53:38', '', 1),
+(49, 'asdas', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', '', 'asdasda', 'dasdas@gmail.com', '2026-05-14 16:54:50', '', 1),
+(50, 'asdas', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', '', 'asdasda', 'dasdas@gmail.com', '2026-05-14 16:54:54', '', 1),
+(51, 'uuuuu', '933a5444cd7f7c9c6056d99bbc31bb14947d49b614c5223fd5fc88c89678c2c4ca41ae883fd334f224c468ce42e56bff8e9db6ade6f21408d3ecc774b5f07b38', 'rarara', 'asdadasdasda', 'uuuuu@gmail.com', '2026-05-14 16:58:31', '', 1),
+(52, 'rururu', 'c144cfc381164dea5b507d51d73a980376c2ad3c33edbb55d19c41a85dab5dfe4caab7c19eea99c7d126006ba35bd2abc921f11b825a086bc79dc3ebca8330b4', 'rerere', 'iiii', 'rururu@gmail.com', '2026-05-14 16:59:11', '', 1),
+(53, 'IT-KYLE', 'ba3253876aed6bc22d4a6ff53d8406c6ad864195ed144ab5c87621b6c233b548baeae6956df346ec8c17f5ea10f35ee3cbc514797ed7ddd3145464e2a0bab413', '123456', 'IT-KYLE', 'kylealino@gmail.com', '2026-05-14 17:02:54', '', 1),
+(54, 'TEST33333', 'b0412597dcea813655574dc54a5b74967cf85317f0332a2591be7953a016f8de56200eb37d5ba593b1e4aa27cea5ca27100f94dccd5b04bae5cadd4454dba67d', '111111', 'TEST33333', 'kylealino@gmail.com', '2026-05-14 17:09:18', '', 1),
+(55, 'asdadasdas', '2f078ff4f34a3c1d59a3dd1eac85e629c92800814bb442e81aa366849e59f0088b880af3ab2e1ff1dfc2e5c15217044bec27b61a15d259a7fcb413e5067aa5e8', 'asdasdasd', 'asdasdasdasd', 'kylealino@gmail.com', '2026-05-14 17:11:09', '', 1),
+(56, 'WORKING-TEST', '484570a73b8bb6494d06915b0f803b252a72bcf47a004b1046f0a56fdb55d0680620aeea3fb1a01b5ff04eef7b8e29515baf954b4599dc4e2ed5a72ed6d9e46a', 'ASDASD', 'WORKING-TEST', 'kylealino@gmail.com', '2026-05-14 17:15:04', '', 1),
+(57, 'IT-KYLED', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'IT-KYLED', 'kylealino@gmail.com', '2026-05-14 17:18:33', '', 1),
+(58, 'ACCT-KYLE', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'ACCT-KYLE', 'kylealino@gmail.com', '2026-05-14 17:23:49', '', 1),
+(59, 'TEST-KYLETEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TEST-KYLETEST', 'kylealino@gmail.com', '2026-05-14 17:25:56', '', 1),
+(60, 'RARA-KYLE', '263fec58861449aacc1c328a4aff64aff4c62df4a2d50b3f207fa89b6e242c9aa778e7a8baeffef85b6ca6d2e7dc16ff0a760d59c13c238f6bcdc32f8ce9cc62', '123123', 'IT-RARA', 'kylealino@gmail.com', '2026-05-14 17:52:23', '', 1),
+(61, 'SGS-JAMIE', '484570a73b8bb6494d06915b0f803b252a72bcf47a004b1046f0a56fdb55d0680620aeea3fb1a01b5ff04eef7b8e29515baf954b4599dc4e2ed5a72ed6d9e46a', 'ASDASD', 'JAMIE CRUZ', 'ghemilynne.cruz.s@gmail.com', '2026-05-14 22:52:47', '', 1),
+(62, 'SGS-CRUZ', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'JAMIE CRUZ', 'cruzghemilynne.26@gmail.com', '2026-05-14 22:54:27', '', 1),
+(63, 'CS-FNRI', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'CSC-FNRI', 'joanvillamor@gmail.com', '2026-05-15 08:19:43', '', 1),
+(64, 'IT-OLI', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'C-OLI', 'kylealino@gmail.com', '2026-05-15 08:47:50', '', 1),
+(65, 'ASDASDAS', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TESTRARA', 'kylealino@gmail.com', '2026-05-15 10:49:00', '', 1),
+(66, 'kylealino', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'DTEST21', 'kylealino@gmail.com', '2026-05-15 10:51:48', '', 1),
+(67, 'JOAN-TEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'MAAM JOAN', 'kylealino@gmail.com', '2026-05-15 10:54:31', '', 1),
+(68, 'OLI-TEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'SIR OLI', 'kylealino@gmail.com', '2026-05-15 11:03:37', '', 1),
+(69, 'KYLETEST111', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'KYLE-TEST-111', 'kylealino@gmail.com', '2026-05-15 13:47:59', '', 1),
+(70, 'RESEND-TEST2', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'RESEND2', 'kylealino@gmail.com', '2026-05-15 14:11:28', '', 1),
+(71, 'RESENDWORKINGTEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'RESENDWORKINGTEST', 'kylealino@gmail.com', '2026-05-15 14:15:38', '', 1),
+(72, 'LC-FNRI', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'DOSTFNRI', 'kylealino@gmail.com', '2026-05-15 15:12:03', '', 1),
+(73, 'KOYAKOY', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'KOYAKOY2', 'kylealino@gmail.com', '2026-05-15 15:42:27', '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tmp_myua_user`
+--
+
+CREATE TABLE `tmp_myua_user` (
+  `recid` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `hash_password` varchar(200) NOT NULL,
+  `hash_value` varchar(150) NOT NULL,
+  `company_code` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `otp_code` int(50) NOT NULL,
+  `otp_expiry` datetime NOT NULL DEFAULT current_timestamp(),
+  `attempt_count` int(11) DEFAULT 0,
+  `last_attempt_date` date DEFAULT NULL,
+  `added_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `added_by` varchar(50) NOT NULL,
+  `is_active` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tmp_myua_user`
+--
+
+INSERT INTO `tmp_myua_user` (`recid`, `username`, `hash_password`, `hash_value`, `company_code`, `email`, `otp_code`, `otp_expiry`, `attempt_count`, `last_attempt_date`, `added_at`, `added_by`, `is_active`) VALUES
+(1, 'qtest1', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TESTTEST', 'kylealino@gmail.com', 955751, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 09:47:18', '', 1),
+(2, 'qtest2', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'testetst', 'kylealino@gmail.com', 671551, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 09:50:33', '', 1),
+(3, 'DRUN-TEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TEST DRY RUN', 'kylealino@gmail.com', 396083, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 10:45:38', '', 1),
+(4, 'ASDASDAS', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TESTRARA', 'kylealino@gmail.com', 351513, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 10:48:11', '', 1),
+(5, 'kylealino', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'DTEST21', 'kylealino@gmail.com', 371765, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 10:51:29', '', 1),
+(6, 'JOAN-TEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'MAAM JOAN', 'kylealino@gmail.com', 666465, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 10:54:04', '', 1),
+(7, 'OLI-TEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'SIR OLI', 'kylealino@gmail.com', 400236, '2026-05-15 11:33:30', 0, NULL, '2026-05-15 11:00:25', '', 1),
+(8, 'KYLETEST111', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'KYLE-TEST-111', 'kylealino@gmail.com', 422499, '2026-05-15 11:57:23', 0, NULL, '2026-05-15 11:42:23', '', 1),
+(9, 'RESEND-TEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TESTRESEND', 'kylealino@gmail.com', 259348, '2026-05-15 14:23:39', 0, NULL, '2026-05-15 14:08:22', '', 1),
+(10, 'RESEND-TEST2', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'RESEND2', 'kylealino@gmail.com', 688906, '2026-05-15 14:26:03', 0, NULL, '2026-05-15 14:10:43', '', 1),
+(11, 'RESENDWORKINGTEST', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'RESENDWORKINGTEST', 'kylealino@gmail.com', 707984, '2026-05-15 14:16:19', 0, NULL, '2026-05-15 14:14:58', '', 1),
+(12, 'TESTEXPIRY', '484570a73b8bb6494d06915b0f803b252a72bcf47a004b1046f0a56fdb55d0680620aeea3fb1a01b5ff04eef7b8e29515baf954b4599dc4e2ed5a72ed6d9e46a', 'ASDASD', 'TESTEXPIRY', 'kylealino@gmail.com', 927229, '2026-05-15 14:17:34', 0, NULL, '2026-05-15 14:17:34', '', 1),
+(13, 'TESTATTEMPT1', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TESTATTEMPT1', 'kylealino@gmail.com', 327760, '2026-05-15 14:43:24', 0, NULL, '2026-05-15 14:28:24', '', 1),
+(14, 'KYLEATTEMPT1', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'test-attemp1', 'kylealino@gmai.com', 182087, '2026-05-15 14:59:43', 3, '2026-05-15', '2026-05-15 14:40:27', '', 1),
+(15, 'KYLEATTEMPT1', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'testattempt2', 'kylealino@gmail.com', 121415, '2026-05-15 15:09:15', 3, '2026-05-15', '2026-05-15 14:53:54', '', 1),
+(16, 'asdasda', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'testattempt2', 'kylealino@gmail.com', 471163, '2026-05-15 15:10:02', 0, NULL, '2026-05-15 14:55:02', '', 1),
+(17, 'asdasd', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'asdasda', 'asdasd@gmail', 328859, '2026-05-15 15:19:15', 0, NULL, '2026-05-15 15:04:15', '', 1),
+(18, 'rarara', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'TESTINGWORKING', 'kylealino@gmail.com', 437188, '2026-05-15 15:25:02', 3, '2026-05-15', '2026-05-15 15:09:44', '', 1),
+(19, 'LC-FNRI', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'DOSTFNRI', 'kylealino@gmail.com', 222593, '2026-05-15 15:26:50', 0, NULL, '2026-05-15 15:11:30', '', 1),
+(20, 'IT-KOYAKOY', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'KOYAKOY', 'kylealino@gmail.com', 630480, '2026-05-15 15:56:11', 3, '2026-05-15', '2026-05-15 15:40:45', '', 1),
+(21, 'KOYAKOY', 'aeae379a6e857728e44164267fdb7a0e27b205d757cc19899586c89dbb221930f1813d02ff93a661859bc17065eac4d6edf3c38a034e6283a84754d52917e5b0', 'asdasd', 'KOYAKOY2', 'kylealino@gmail.com', 361238, '2026-05-15 15:56:52', 0, NULL, '2026-05-15 15:41:52', '', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `myua_user`
+--
+ALTER TABLE `myua_user`
+  ADD PRIMARY KEY (`recid`);
+
+--
+-- Indexes for table `tmp_myua_user`
+--
+ALTER TABLE `tmp_myua_user`
+  ADD PRIMARY KEY (`recid`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `myua_user`
+--
+ALTER TABLE `myua_user`
+  MODIFY `recid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+
+--
+-- AUTO_INCREMENT for table `tmp_myua_user`
+--
+ALTER TABLE `tmp_myua_user`
+  MODIFY `recid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

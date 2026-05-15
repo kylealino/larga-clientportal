@@ -1,0 +1,260 @@
+CRITICAL - 2026-05-15 10:14:37 --> Error: Call to a member function user_save() on null
+[Method: POST, Route: myotp]
+in APPPATH\Controllers\MyOTP.php on line 29.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 10:14:38 --> Error: Call to a member function user_save() on null
+[Method: POST, Route: myotp]
+in APPPATH\Controllers\MyOTP.php on line 29.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 10:14:39 --> Error: Call to a member function user_save() on null
+[Method: POST, Route: myotp]
+in APPPATH\Controllers\MyOTP.php on line 29.
+ 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 2 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 3 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 10:17:47 --> TypeError: Unsupported operand types: string + string
+[Method: POST, Route: myotp]
+in APPPATH\Models\MyOTPModel.php on line 29.
+ 1 APPPATH\Controllers\MyOTP.php(29): App\Models\MyOTPModel->user_save()
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-05-15 10:46:08 --> mysqli_sql_exception: Unknown column 'is_email_verified' in 'where clause' in C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php(327): mysqli->query('\r\n\t\t\tSELECT * F...', 0)
+#1 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('\r\n\t\t\tSELECT * F...')
+#2 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('\r\n\t\t\tSELECT * F...')
+#3 C:\xampp\htdocs\larga-clientportal\app\Models\MyOTPModel.php(35): CodeIgniter\Database\BaseConnection->query('\r\n\t\t\tSELECT * F...')
+#4 C:\xampp\htdocs\larga-clientportal\app\Controllers\MyOTP.php(29): App\Models\MyOTPModel->user_save()
+#5 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+#6 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+#7 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\larga-clientportal\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\larga-clientportal\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\larga-clientportal\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-05-15 10:46:08 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'is_email_verified' in 'where clause'
+[Method: POST, Route: myotp]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 APPPATH\Models\MyOTPModel.php(35): CodeIgniter\Database\BaseConnection->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 2 APPPATH\Controllers\MyOTP.php(29): App\Models\MyOTPModel->user_save()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 10:46:08 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'is_email_verified' in 'where clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 3 APPPATH\Models\MyOTPModel.php(35): CodeIgniter\Database\BaseConnection->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 4 APPPATH\Controllers\MyOTP.php(29): App\Models\MyOTPModel->user_save()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 10:46:08 --> [Caused by] mysqli_sql_exception: Unknown column 'is_email_verified' in 'where clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 4 APPPATH\Models\MyOTPModel.php(35): CodeIgniter\Database\BaseConnection->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'TEST DRY RUN\' 
+			AND is_email_verified = 0
+		')
+ 5 APPPATH\Controllers\MyOTP.php(29): App\Models\MyOTPModel->user_save()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 10:46:42 --> ErrorException: Undefined variable $tmpUser
+[Method: POST, Route: myotp]
+in APPPATH\Models\MyOTPModel.php on line 33.
+ 1 APPPATH\Models\MyOTPModel.php(33): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $tmpUser', 'C:\\xampp\\htdocs\\larga-clientportal\\app\\Models\\MyOTPModel.php', 33)
+ 2 APPPATH\Controllers\MyOTP.php(29): App\Models\MyOTPModel->user_save()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-05-15 14:40:56 --> mysqli_sql_exception: Unknown column 'is_email_verified' in 'where clause' in C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php(327): mysqli->query('\r\n\t\t\tSELECT * F...', 0)
+#1 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('\r\n\t\t\tSELECT * F...')
+#2 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('\r\n\t\t\tSELECT * F...')
+#3 C:\xampp\htdocs\larga-clientportal\app\Models\MyOTPModel.php(1284): CodeIgniter\Database\BaseConnection->query('\r\n\t\t\tSELECT * F...')
+#4 C:\xampp\htdocs\larga-clientportal\app\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+#5 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+#6 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+#7 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\larga-clientportal\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\larga-clientportal\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\larga-clientportal\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+CRITICAL - 2026-05-15 14:40:56 --> CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'is_email_verified' in 'where clause'
+[Method: POST, Route: myotp]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 APPPATH\Models\MyOTPModel.php(1284): CodeIgniter\Database\BaseConnection->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 2 APPPATH\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 14:40:56 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Unknown column 'is_email_verified' in 'where clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 3 APPPATH\Models\MyOTPModel.php(1284): CodeIgniter\Database\BaseConnection->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 4 APPPATH\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 14:40:56 --> [Caused by] mysqli_sql_exception: Unknown column 'is_email_verified' in 'where clause'
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 4 APPPATH\Models\MyOTPModel.php(1284): CodeIgniter\Database\BaseConnection->query('
+			SELECT * FROM tmp_myua_user 
+			WHERE company_code = \'test-attemp1\' 
+			AND is_email_verified = 0
+		')
+ 5 APPPATH\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 14:41:25 --> ErrorException: Undefined variable $emailto
+[Method: POST, Route: myotp]
+in APPPATH\Models\MyOTPModel.php on line 1339.
+ 1 APPPATH\Models\MyOTPModel.php(1339): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $emailto', 'C:\\xampp\\htdocs\\larga-clientportal\\app\\Models\\MyOTPModel.php', 1339)
+ 2 APPPATH\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 14:43:03 --> ErrorException: Undefined variable $otp_code
+[Method: POST, Route: myotp]
+in APPPATH\Models\MyOTPModel.php on line 1485.
+ 1 APPPATH\Models\MyOTPModel.php(1485): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $otp_code', 'C:\\xampp\\htdocs\\larga-clientportal\\app\\Models\\MyOTPModel.php', 1485)
+ 2 APPPATH\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+ 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 4 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 5 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 6 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 14:43:35 --> CodeIgniter\Database\Exceptions\DatabaseException: You must set the database table to be used with your query.
+[Method: POST, Route: myotp]
+in SYSTEMPATH\Database\BaseConnection.php on line 941.
+ 1 SYSTEMPATH\Model.php(714): CodeIgniter\Database\BaseConnection->table(null)
+ 2 SYSTEMPATH\Model.php(895): CodeIgniter\Model->builder()
+ 3 APPPATH\Models\MyOTPModel.php(1674): CodeIgniter\Model->__get('response')
+ 4 APPPATH\Controllers\MyOTP.php(34): App\Models\MyOTPModel->resend_otp()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyOTP->index()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyOTP))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-15 15:06:16 --> CodeIgniter\Database\Exceptions\DatabaseException: You must set the database table to be used with your query.
+[Method: POST, Route: myregistration]
+in SYSTEMPATH\Database\BaseConnection.php on line 941.
+ 1 SYSTEMPATH\Model.php(714): CodeIgniter\Database\BaseConnection->table(null)
+ 2 SYSTEMPATH\Model.php(895): CodeIgniter\Model->builder()
+ 3 APPPATH\Models\MyRegistrationModel.php(51): CodeIgniter\Model->__get('response')
+ 4 APPPATH\Controllers\MyRegistration.php(29): App\Models\MyRegistrationModel->tmp_user_save()
+ 5 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyRegistration->index()
+ 6 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyRegistration))
+ 7 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

@@ -16,7 +16,7 @@ class MyRegistrationModel extends Model
         
     }
 
-	public function user_save() {
+	public function tmp_user_save() {
 
 		$company_code = $this->request->getPostGet('company_code');
 		$username = $this->request->getPostGet('username');
@@ -26,18 +26,28 @@ class MyRegistrationModel extends Model
 		$emailsend = \Config\Services::email();
 
 		$hash_password = hash('sha512', $hash_value);
+		
+		// =========================
+		// GENERATE 6-DIGIT OTP CODE
+		// =========================
+		$otp_code = sprintf("%06d", mt_rand(1, 999999));
+		
+		// OTP expiry timestamp (15 minutes from now)
+		$otp_expiry = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+		
 
 		// =========================
-		// SAVE USER
+		// SAVE USER WITH OTP CODE
 		// =========================
 		$query = $this->db->query("
-			INSERT INTO `myua_user`(
+			INSERT INTO `tmp_myua_user`(
 				`username`,
 				`hash_password`,
 				`hash_value`,
 				`company_code`,
 				`email`,
-				`added_by`
+				`otp_code`,
+				`otp_expiry`
 			)
 			VALUES(
 				'$username',
@@ -45,7 +55,8 @@ class MyRegistrationModel extends Model
 				'$hash_value',
 				'$company_code',
 				'$emailto',
-				'{$this->cuser}'
+				'$otp_code',
+				'$otp_expiry'
 			)
 		");
 
@@ -53,20 +64,20 @@ class MyRegistrationModel extends Model
 		// EMAIL CONFIGURATION
 		// =========================
 		$emailsend->setFrom(
-			'largaphilippines.com',
+			'noreply@largaphilippines.com',
 			'LARGA INTERNATIONAL LOGISTICS INC.'
 		);
 
 		$emailsend->setTo($emailto);
 
 		$emailsend->setSubject(
-			'LARGA INTERNATIONAL LOGISTICS INC. | Client Portal Registration Successful'
+			'LARGA INTERNATIONAL LOGISTICS INC. | Email Verification Required'
 		);
 
 		$emailsend->setMailType('html');
 
 		// =========================
-		// PROFESSIONAL EMAIL TEMPLATE
+		// PROFESSIONAL EMAIL TEMPLATE WITH OTP
 		// =========================
 		$message = '
 
@@ -103,7 +114,7 @@ class MyRegistrationModel extends Model
 						letter-spacing:1px;
 						font-weight:600;
 					">
-						LARGA CLIENT PORTAL
+						EMAIL VERIFICATION REQUIRED
 					</div>
 
 					<h1 style="
@@ -113,7 +124,7 @@ class MyRegistrationModel extends Model
 						letter-spacing:0.5px;
 						line-height:1.3;
 					">
-						LARGA INTERNATIONAL LOGISTICS INC.
+						Verify Your Email Address
 					</h1>
 
 					<p style="
@@ -122,7 +133,7 @@ class MyRegistrationModel extends Model
 						color:#dbeafe;
 						line-height:1.7;
 					">
-						Client Portal Registration Successful
+						Complete your registration to access the Client Portal
 					</p>
 
 				</div>
@@ -138,7 +149,7 @@ class MyRegistrationModel extends Model
 						color:#111827;
 						font-size:26px;
 					">
-						Welcome to the Client Portal
+						One-Time Password (OTP) Verification
 					</h2>
 
 					<p style="
@@ -146,24 +157,84 @@ class MyRegistrationModel extends Model
 						line-height:1.9;
 						margin-top:20px;
 					">
-						Dear <strong>'.$username.'</strong>,
+						Dear <strong>' . htmlspecialchars($username) . '</strong>,
 					</p>
 
 					<p style="
 						font-size:15px;
 						line-height:1.9;
 					">
-						Your registration to the 
+						Thank you for registering with 
 						<strong>LARGA INTERNATIONAL LOGISTICS INC.</strong> 
-						Client Portal has been successfully completed.
+						Client Portal.
 					</p>
 
 					<p style="
 						font-size:15px;
 						line-height:1.9;
 					">
-						You may now access your client account and manage your logistics transactions, shipment monitoring, records, and portal activities securely through our online system.
+						To complete your registration and activate your account,
+						please use the One-Time Password (OTP) below:
 					</p>
+
+					<!-- OTP CODE - HIGHLIGHTED -->
+					<div style="
+						margin:30px 0;
+						text-align:center;
+					">
+						<div style="
+							display:inline-block;
+							background:#f0f9ff;
+							border:2px solid #0052cc;
+							border-radius:16px;
+							padding:20px 40px;
+						">
+							<span style="
+								font-size:42px;
+								font-weight:800;
+								letter-spacing:8px;
+								color:#0052cc;
+								font-family:monospace;
+							">' . $otp_code . '</span>
+						</div>
+					</div>
+
+					<div style="
+						background:#fef3c7;
+						border-left:5px solid #f59e0b;
+						border-radius:10px;
+						padding:15px 20px;
+						margin:20px 0;
+					">
+						<p style="
+							margin:0;
+							font-size:14px;
+							color:#92400e;
+							line-height:1.6;
+						">
+							<strong>⚠️ Important:</strong> This OTP is valid for 
+							<strong>15 minutes</strong> from the time of this email.
+							For security reasons, do not share this code with anyone.
+						</p>
+					</div>
+
+					<p style="
+						font-size:15px;
+						line-height:1.9;
+					">
+						<strong>How to verify:</strong>
+					</p>
+
+					<ol style="
+						margin:15px 0 15px 20px;
+						line-height:1.8;
+						font-size:14px;
+					">
+						<li>Return to the LARGA Client Portal registration page</li>
+						<li>Enter the 6-digit OTP code shown above</li>
+						<li>Click "Verify Email" to activate your account</li>
+						<li>You will be redirected to the login page upon successful verification</li>
+					</ol>
 
 					<!-- ACCOUNT DETAILS -->
 					<div style="
@@ -180,11 +251,10 @@ class MyRegistrationModel extends Model
 							font-size:18px;
 							color:#111827;
 						">
-							Client Portal Account Information
+							Registration Summary
 						</h3>
 
 						<table width="100%" cellpadding="8" cellspacing="0">
-
 							<tr>
 								<td style="
 									font-weight:bold;
@@ -193,12 +263,10 @@ class MyRegistrationModel extends Model
 								">
 									Company Code:
 								</td>
-
 								<td style="color:#111827;">
-									'.$company_code.'
+									' . htmlspecialchars($company_code) . '
 								</td>
 							</tr>
-
 							<tr>
 								<td style="
 									font-weight:bold;
@@ -206,29 +274,10 @@ class MyRegistrationModel extends Model
 								">
 									Username:
 								</td>
-
 								<td style="color:#111827;">
-									'.$username.'
+									' . htmlspecialchars($username) . '
 								</td>
 							</tr>
-
-							<tr>
-								<td style="
-									font-weight:bold;
-									color:#374151;
-								">
-									Temporary Password:
-								</td>
-
-								<td style="
-									color:#dc2626;
-									font-weight:bold;
-									letter-spacing:1px;
-								">
-									'.$hash_value.'
-								</td>
-							</tr>
-
 							<tr>
 								<td style="
 									font-weight:bold;
@@ -236,61 +285,59 @@ class MyRegistrationModel extends Model
 								">
 									Registered Email:
 								</td>
-
 								<td style="color:#111827;">
-									'.$emailto.'
+									' . htmlspecialchars($emailto) . '
 								</td>
 							</tr>
-
 							<tr>
 								<td style="
 									font-weight:bold;
 									color:#374151;
 								">
-									Account Status:
+									OTP Expiry:
 								</td>
-
-								<td style="
-									color:#10b981;
-									font-weight:bold;
-								">
-									ACTIVE
+								<td style="color:#dc2626;">
+									' . date('F d, Y h:i A', strtotime($otp_expiry)) . '
 								</td>
 							</tr>
-
 						</table>
 
 					</div>
 
-					<!-- SECURITY NOTICE -->
+					<!-- TROUBLESHOOTING -->
 					<div style="
 						margin-top:25px;
 						padding:20px;
-						background:#fef3c7;
-						border-left:5px solid #f59e0b;
+						background:#eef2ff;
 						border-radius:10px;
 					">
-
+						<p style="
+							margin:0 0 10px 0;
+							font-size:13px;
+							color:#1e3a8a;
+							line-height:1.6;
+						">
+							<strong>❓ Didn\'t receive the OTP or having issues?</strong>
+						</p>
 						<p style="
 							margin:0;
-							font-size:14px;
-							line-height:1.8;
-							color:#92400e;
+							font-size:13px;
+							color:#1e3a8a;
+							line-height:1.6;
 						">
-							For security purposes, we strongly recommend changing your password immediately after your first login to the Client Portal.
+							• Check your spam/junk folder<br>
+							• Ensure you entered the correct email address<br>
+							• Contact our support team at support@largaphilippines.com
 						</p>
-
 					</div>
 
-					<!-- FOOTER MESSAGE -->
 					<p style="
 						margin-top:35px;
 						font-size:15px;
 						line-height:1.9;
 					">
 						Thank you for choosing 
-						<strong>LARGA INTERNATIONAL LOGISTICS INC.</strong>.
-						We look forward to providing you with reliable and efficient logistics services.
+						<strong>LARGA INTERNATIONAL LOGISTICS INC.</strong>
 					</p>
 
 					<p style="
@@ -317,7 +364,7 @@ class MyRegistrationModel extends Model
 					padding:22px;
 					font-size:13px;
 				">
-					© '.date('Y').' LARGA INTERNATIONAL LOGISTICS INC.
+					© ' . date('Y') . ' LARGA INTERNATIONAL LOGISTICS INC.
 					All Rights Reserved.
 				</div>
 
@@ -330,31 +377,31 @@ class MyRegistrationModel extends Model
 		$emailsend->setMessage($message);
 
 		// =========================
-		// SEND EMAIL
+		// SEND EMAIL WITH OTP
 		// =========================
 		$emailSent = $emailsend->send();
 
 		// =========================
-		// RETURN RESPONSE
+		// RETURN RESPONSE (Matches your frontend expectation)
 		// =========================
-		if($query){
+		if ($query) {
 
 			return [
 				'status' => 'success',
-				'message' => 'Registration Saved Successfully',
-				'email_status' => $emailSent
+				'message' => 'Registration successful! Please check your email for the OTP verification code.',
+				'email_status' => $emailSent,
+				'company_code' => $company_code
 			];
 
 		} else {
 
 			return [
 				'status' => 'error',
-				'message' => 'Registration Failed'
+				'message' => 'Registration Failed. Please try again.'
 			];
 
 		}
 	}
 
-	
 } //end main class
 ?>

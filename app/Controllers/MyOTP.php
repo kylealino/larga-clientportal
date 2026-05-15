@@ -4,12 +4,12 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 
-class MyRegistration extends BaseController
+class MyOTP extends BaseController
 {
     public function __construct()
 	{
 		$this->request = \Config\Services::request();
-        $this->myregistration = model('App\Models\MyRegistrationModel');
+        $this->myotp = model('App\Models\MyOTPModel');
         $this->db = \Config\Database::connect();
         $this->session = session();
         $this->db = \Config\Database::connect();
@@ -22,11 +22,16 @@ class MyRegistration extends BaseController
     
         switch ($meaction) {
             case 'MAIN': 
-                return view('MyRegistration');
+                return view('MyOTP');
                 break;
 
-            case 'REGISTER-SAVE':
-                $result = $this->myregistration->tmp_user_save();
+            case 'OTP-SAVE':
+                $result = $this->myotp->user_save();
+                return $this->response->setJSON($result);
+                break;
+
+            case 'OTP-RESEND':
+                $result = $this->myotp->resend_otp();
                 return $this->response->setJSON($result);
                 break;
             

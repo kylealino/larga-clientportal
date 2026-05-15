@@ -119,3 +119,61 @@ in APPPATH\Models\MyRegistrationModel.php on line 47.
  5 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
  6 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
  7 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-05-14 22:47:48 --> Error connecting to the database: mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('localhost', 'root', Object(SensitiveParameterValue), 'largaclient', 3306, '', 0)
+#1 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#3 C:\xampp\htdocs\larga-clientportal\app\Models\MyRegistrationModel.php(33): CodeIgniter\Database\BaseConnection->query('\r\n\t\t\tINSERT INT...')
+#4 C:\xampp\htdocs\larga-clientportal\app\Controllers\MyRegistration.php(29): App\Models\MyRegistrationModel->user_save()
+#5 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(933): App\Controllers\MyRegistration->index()
+#6 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyRegistration))
+#7 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\larga-clientportal\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\larga-clientportal\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\larga-clientportal\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\larga-clientportal\system\Database\MySQLi\Connection.php:246
+Stack trace:
+#0 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 C:\xampp\htdocs\larga-clientportal\system\Database\BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+#2 C:\xampp\htdocs\larga-clientportal\app\Models\MyRegistrationModel.php(33): CodeIgniter\Database\BaseConnection->query('\r\n\t\t\tINSERT INT...')
+#3 C:\xampp\htdocs\larga-clientportal\app\Controllers\MyRegistration.php(29): App\Models\MyRegistrationModel->user_save()
+#4 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(933): App\Controllers\MyRegistration->index()
+#5 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyRegistration))
+#6 C:\xampp\htdocs\larga-clientportal\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#7 C:\xampp\htdocs\larga-clientportal\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#8 C:\xampp\htdocs\larga-clientportal\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#9 C:\xampp\htdocs\larga-clientportal\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#10 {main}
+CRITICAL - 2026-05-14 22:47:48 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: No connection could be made because the target machine actively refused it
+[Method: POST, Route: myregistration]
+in SYSTEMPATH\Database\BaseConnection.php on line 467.
+ 1 SYSTEMPATH\Database\BaseConnection.php(620): CodeIgniter\Database\BaseConnection->initialize()
+ 2 APPPATH\Models\MyRegistrationModel.php(33): CodeIgniter\Database\BaseConnection->query('
+			INSERT INTO `myua_user`(
+				`username`,
+				`hash_password`,
+				`hash_value`,
+				`company_code`,
+				`email`,
+				`added_by`
+			)
+			VALUES(
+				\'SGS-JAMIE\',
+				\'c684dabdee8f1f35d6723ef93bbf30641a4bfe1359eec88df449f1cd3db348d650875d90cf65a08341e723c4fac28fb6c0e8e7ae5cf96e23ce27a854eeda923e\',
+				\'sgs123\',
+				\'JCRUZYESYES\',
+				\'ghemilynne.cruz.s@gmail.com\',
+				\'\'
+			)
+		')
+ 3 APPPATH\Controllers\MyRegistration.php(29): App\Models\MyRegistrationModel->user_save()
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\MyRegistration->index()
+ 5 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\MyRegistration))
+ 6 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

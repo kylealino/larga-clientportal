@@ -14,3 +14,6 @@ $routes->get('client-portal', 'ClientPortal::index');  // JUST ADD THIS ONE LINE
 
 $routes->get('myregistration', 'MyRegistration::index');
 $routes->post('myregistration', 'MyRegistration::index');
+
+$routes->get('myotp', 'MyOTP::index');
+$routes->post('myotp', 'MyOTP::index');
